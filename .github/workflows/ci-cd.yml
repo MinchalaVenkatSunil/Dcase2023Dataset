@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-     - feature
+     - main
 
 jobs:
   build:
@@ -26,16 +26,25 @@ jobs:
 
     - name: Build and push Docker images
       run: |
-        docker build -t data_collection_simulation --label "Check" -f DatacollectionDockerFile .
-        docker build -t data_transfer_to_gcs --label "" -f DataTransferDockerFile .
-        docker build -t model_training_on_gcp --label"" -f ModelTrainingDockerFile .
+        
+        docker build -t ml-data-collection-service --label "Simulates weekly sensor data collection and uploads to Google Cloud." -f DatacollectionDockerFile .
+        docker build -t ml-data-transfer-service --label "Transfers local data to Google Cloud Storage on a simulated weekly basis." -f DataTransferDockerFile .
+        docker build -t ml-model-training-service --label "Configures and runs model training on Google Cloud using uploaded data." -f ModelTrainingDockerFile .
+        docker build -t ml-inference-service --label "Evaluate and update the model for local inference if it performs better." -f ModelEvaluationandUpdateDockerFile .
 
         echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-        docker tag data_collection_simulation ${{ secrets.DOCKER_USERNAME }}/data_collection_simulation
-        docker tag data_transfer_to_gcs ${{ secrets.DOCKER_USERNAME }}/data_transfer_to_gcs
-        docker tag model_training_on_gcp ${{ secrets.DOCKER_USERNAME }}/model_training_on_gcp
+        docker tag ml-data-collection-service ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service
+        docker tag ml-data-transfer-service ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service
+        docker tag ml-model-training-service ${{ secrets.DOCKER_USERNAME }}/ml-model-training-service
+        docker tag ml-inference-service ${{ secrets.DOCKER_USERNAME }}/ml-inference-service
 
-        docker push ${{ secrets.DOCKER_USERNAME }}/data_collection_simulation
-        docker push ${{ secrets.DOCKER_USERNAME }}/data_transfer_to_gcs
-        docker push ${{ secrets.DOCKER_USERNAME }}/model_training_on_gcp
+        docker rmi ${{ secrets.DOCKER_USERNAME }}/data_collection_simulation:latest
+        docker rmi ${{ secrets.DOCKER_USERNAME }}/data_transfer_to_gcs:latest
+        docker rmi ${{ secrets.DOCKER_USERNAME }}/model_training_on_gcp:latest
+
+        docker push ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service
+        docker push ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service
+        docker push ${{ secrets.DOCKER_USERNAME }}/ml-model-training-service
+        docker push ${{ secrets.DOCKER_USERNAME }}/ml-inference-service
+
