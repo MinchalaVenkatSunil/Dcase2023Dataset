@@ -30,8 +30,8 @@ jobs:
     - name: Build and push Docker images
       run: |
 
-        VERSION="1.0.1"
-        SUFFIX="$(git rev-list --count HEAD) - $(date +%Y%m%d%H%M%S)"
+        VERSION= '1.0.1'
+        SUFFIX= '$(Date:yyyyMMdd)$(Rev:.r)'
         
         docker build -t ml-data-collection-service:${VERSION}-${SUFFIX} --label "Simulates weekly sensor data collection and uploads to Google Cloud." -f DatacollectionDockerFile .
         docker build -t ml-data-transfer-service:${VERSION}-${SUFFIX} --label "Transfers local data to Google Cloud Storage on a simulated weekly basis." -f DataTransferDockerFile .
