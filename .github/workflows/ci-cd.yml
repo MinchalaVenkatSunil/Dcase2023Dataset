@@ -36,10 +36,10 @@ jobs:
           docker build -t ml-model-training-service:${IMAGE_VERSION} --label "Configures and runs model training on Google Cloud using uploaded data." -f ModelTrainingDockerFile .
           docker build -t ml-inference-service:${IMAGE_VERSION} --label "Evaluate and update the model for local inference if it performs better." -f ModelEvaluationandUpdateDockerFile .
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker tag ml-data-collection-service:${IMAGE_VERSION} $DOCKER_USERNAME/ml-data-collection-service:${IMAGE_VERSION}
-          docker tag ml-data-transfer-service:${IMAGE_VERSION} $DOCKER_USERNAME/ml-data-transfer-service:${IMAGE_VERSION}
-          docker tag ml-model-training-service:${IMAGE_VERSION} $DOCKER_USERNAME/ml-model-training-service:${IMAGE_VERSION}
-          docker tag ml-inference-service:${IMAGE_VERSION} $DOCKER_USERNAME/ml-inference-service:${IMAGE_VERSION}
+          docker tag ml-data-collection-service:latest $DOCKER_USERNAME/ml-data-collection-service:${IMAGE_VERSION}
+          docker tag ml-data-transfer-service:latest $DOCKER_USERNAME/ml-data-transfer-service:${IMAGE_VERSION}
+          docker tag ml-model-training-service:latest $DOCKER_USERNAME/ml-model-training-service:${IMAGE_VERSION}
+          docker tag ml-inference-service:latest $DOCKER_USERNAME/ml-inference-service:${IMAGE_VERSION}
           docker push $DOCKER_USERNAME/ml-data-collection-service:${IMAGE_VERSION}
           docker push $DOCKER_USERNAME/ml-data-transfer-service:${IMAGE_VERSION}
           docker push $DOCKER_USERNAME/ml-model-training-service:${IMAGE_VERSION}
