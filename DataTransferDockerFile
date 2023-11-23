@@ -1,12 +1,19 @@
-# Dockerfile.data_transfer_to_gcs
-FROM python:3.8
+# Use a smaller base image
+FROM python:3.8-alpine
 
 WORKDIR /app
 
-COPY requirements.txt .
-
-RUN pip install --no-cache-dir -r requirements.txt
-
+# Copy only the necessary files
 COPY data_transfer_to_gcs.py .
 
+# Install dependencies and remove unnecessary files in a single layer
+RUN apk --no-cache add \
+        build-base \
+    && pip install --no-cache-dir -r data_transfer_to_gcs.py \
+    && apk del build-base
+
+# Clean up unnecessary files
+RUN rm -rf /var/cache/apk/*
+
+# Set the default command
 CMD ["python", "data_transfer_to_gcs.py"]
