@@ -29,7 +29,7 @@ jobs:
         docker build -t ml-model-training-service::v1.0.1 --label "Configures and runs model training on Google Cloud using uploaded data." -f ModelTrainingDockerFile .
         docker build -t ml-inference-service::v1.0.1 --label "Evaluate and update the model for local inference if it performs better." -f ModelEvaluationandUpdateDockerFile .
 
-        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKENS }}
 
         docker tag ml-data-collection-service::v1.0.1 ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service::v1.0.1
         docker tag ml-data-transfer-service::v1.0.1 ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service::v1.0.1
@@ -43,7 +43,7 @@ jobs:
 
     #- name: Remove Docker Images
      # run: |   
-      # echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      # echo ${{ secrets.DOCKER_TOKENS }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
        
        # docker rmi venkatsunilm/data_collection_simulation:latest
         #docker rmi venkatsunilm/data_transfer_to_gcs:latest
