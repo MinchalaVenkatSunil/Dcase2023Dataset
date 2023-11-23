@@ -24,22 +24,22 @@ jobs:
     - name: Build and push Docker images
       run: |
         
-        docker build -t ml-data-collection-service:v1.0.0 --label "Simulates weekly sensor data collection and uploads to Google Cloud." -f DatacollectionDockerFile .
-        docker build -t ml-data-transfer-service:v1.0.0 --label "Transfers local data to Google Cloud Storage on a simulated weekly basis." -f DataTransferDockerFile .
-        docker build -t ml-model-training-service:v1.0.0 --label "Configures and runs model training on Google Cloud using uploaded data." -f ModelTrainingDockerFile .
-        docker build -t ml-inference-service:v1.0.0 --label "Evaluate and update the model for local inference if it performs better." -f ModelEvaluationandUpdateDockerFile .
+        docker build -t ml-data-collection-service::v1.0.1 --label "Simulates weekly sensor data collection and uploads to Google Cloud." -f DatacollectionDockerFile .
+        docker build -t ml-data-transfer-service::v1.0.1 --label "Transfers local data to Google Cloud Storage on a simulated weekly basis." -f DataTransferDockerFile .
+        docker build -t ml-model-training-service::v1.0.1 --label "Configures and runs model training on Google Cloud using uploaded data." -f ModelTrainingDockerFile .
+        docker build -t ml-inference-service::v1.0.1 --label "Evaluate and update the model for local inference if it performs better." -f ModelEvaluationandUpdateDockerFile .
 
         echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-        docker tag ml-data-collection-service:v1.0.0 ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:v1.0.0
-        docker tag ml-data-transfer-service:v1.0.0 ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service:v1.0.0
-        docker tag ml-model-training-service:v1.0.0 ${{ secrets.DOCKER_USERNAME }}/ml-model-training-service:v1.0.0
-        docker tag ml-inference-service:v1.0.0 ${{ secrets.DOCKER_USERNAME }}/ml-inference-service:v1.0.0
+        docker tag ml-data-collection-service::v1.0.1 ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service::v1.0.1
+        docker tag ml-data-transfer-service::v1.0.1 ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service::v1.0.1
+        docker tag ml-model-training-service::v1.0.1 ${{ secrets.DOCKER_USERNAME }}/ml-model-training-service::v1.0.1
+        docker tag ml-inference-service::v1.0.1 ${{ secrets.DOCKER_USERNAME }}/ml-inference-service::v1.0.1
 
-        docker push ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:v1.0.0
-        docker push ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service:v1.0.0
-        docker push ${{ secrets.DOCKER_USERNAME }}/ml-model-training-service:v1.0.0
-        docker push ${{ secrets.DOCKER_USERNAME }}/ml-inference-service:v1.0.0
+        docker push ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service::v1.0.1
+        docker push ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service::v1.0.1
+        docker push ${{ secrets.DOCKER_USERNAME }}/ml-model-training-service::v1.0.1
+        docker push ${{ secrets.DOCKER_USERNAME }}/ml-inference-service::v1.0.1
 
     #- name: Remove Docker Images
      # run: |   
