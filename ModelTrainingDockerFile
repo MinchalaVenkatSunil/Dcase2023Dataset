@@ -7,14 +7,18 @@ WORKDIR /app
 COPY model_training_on_gcp.py .
 COPY requirements.txt .
 
-# Install dependencies and remove unnecessary files in a single layer
-RUN apk --no-cache add \
-        build-base \
-    && pip install --no-cache-dir -r requirements.txt \
-    && apk del build-base
+# Install build dependencies
+RUN apk --no-cache add build-base
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Remove build dependencies
+RUN apk del build-base
 
 # Clean up unnecessary files
 RUN rm -rf /var/cache/apk/*
+
 
 # Set the default command
 CMD ["python", "model_training_on_gcp.py"]
