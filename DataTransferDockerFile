@@ -1,0 +1,12 @@
+# Dockerfile.data_transfer_to_gcs
+FROM python:3.8
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY data_transfer_to_gcs.py .
+
+CMD ["python", "data_transfer_to_gcs.py"]
