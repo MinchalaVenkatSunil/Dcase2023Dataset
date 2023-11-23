@@ -21,9 +21,6 @@ jobs:
     - name: Install dependencies
       run: pip install -r requirements.txt
 
-    - name: Error Message
-      run: echo "$ERROR"
-
     - name: Build and push Docker images
       run: |
         
