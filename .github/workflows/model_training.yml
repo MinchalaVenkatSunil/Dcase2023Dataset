@@ -1,0 +1,27 @@
+name: Model Training on Google Cloud
+
+on:
+  push:
+    branches:
+      - feature
+
+jobs:
+  trigger_model_training:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Google Cloud SDK
+      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        service_account_key: ${{ secrets.GCLOUD_AUTH }}
+        project_id: your-project-id
+
+    - name: Trigger Model Training
+      run: |
+        gcloud builds submit \
+          --config=path/to/your/cloudbuild.yaml \
+          --substitutions=_MODEL_NAME=your-model-name,_ANY_OTHER_VARIABLE=any-value
+
