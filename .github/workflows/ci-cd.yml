@@ -31,14 +31,14 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKENS }}
           IMAGE_VERSION: ${{ env.IMAGE_VERSION }}
       run: |
-          docker build -t $DOCKER_USERNAME/ml-data-collection-service:${IMAGE_VERSION} --label "Simulates weekly sensor data collection and uploads to Google Cloud." -f DatacollectionDockerFile .
-          docker build -t $DOCKER_USERNAME/ml-data-transfer-service:${IMAGE_VERSION} --label "Transfers local data to Google Cloud Storage on a simulated weekly basis." -f DataTransferDockerFile .
-          docker build -t $DOCKER_USERNAME/ml-model-training-service:${IMAGE_VERSION} --label "Configures and runs model training on Google Cloud using uploaded data." -f ModelTrainingDockerFile .
-          docker build -t $DOCKER_USERNAME/ml-inference-service:${IMAGE_VERSION} --label "Evaluate and update the model for local inference if it performs better." -f ModelEvaluationandUpdateDockerFile .
+          docker build -t $DOCKER_USERNAME/ml-data-collection-service:$IMAGE_VERSION --label "Simulates weekly sensor data collection and uploads to Google Cloud." -f DatacollectionDockerFile .
+          docker build -t $DOCKER_USERNAME/ml-data-transfer-service:$IMAGE_VERSION --label "Transfers local data to Google Cloud Storage on a simulated weekly basis." -f DataTransferDockerFile .
+          docker build -t $DOCKER_USERNAME/ml-model-training-service:$IMAGE_VERSION --label "Configures and runs model training on Google Cloud using uploaded data." -f ModelTrainingDockerFile .
+          docker build -t $DOCKER_USERNAME/ml-inference-service:$IMAGE_VERSION --label "Evaluate and update the model for local inference if it performs better." -f ModelEvaluationandUpdateDockerFile .
 
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
-          docker push $DOCKER_USERNAME/ml-data-collection-service:${IMAGE_VERSION}
-          docker push $DOCKER_USERNAME/ml-data-transfer-service:${IMAGE_VERSION}
-          docker push $DOCKER_USERNAME/ml-model-training-service:${IMAGE_VERSION}
-          docker push $DOCKER_USERNAME/ml-inference-service:${IMAGE_VERSION}
+          docker push $DOCKER_USERNAME/ml-data-collection-service:$IMAGE_VERSION
+          docker push $DOCKER_USERNAME/ml-data-transfer-service:$IMAGE_VERSION
+          docker push $DOCKER_USERNAME/ml-model-training-service:$IMAGE_VERSION
+          docker push $DOCKER_USERNAME/ml-inference-service:$IMAGE_VERSION
