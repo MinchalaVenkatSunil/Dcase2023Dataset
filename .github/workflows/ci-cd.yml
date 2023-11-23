@@ -4,6 +4,12 @@
 # 3. Extend a base YAML template and overide the parameters as necessary. Move the common tasks to the template. 
 # 4. Trigger the deployment changes in the template dynamically based on branch changes
 
+# TODO:
+# 1. Dynamic pipeline or docker image creation versioning
+# 2. Block docker image creation for non-related changes. 
+# 3. Extend a base YAML template and overide the parameters as necessary. Move the common tasks to the template. 
+# 4. Trigger the deployment changes in the template dynamically based on branch changes
+
 name: CI/CD Pipeline
 
 on:
@@ -32,8 +38,10 @@ jobs:
 
         #echo "IMAGE_VERSION=$(git rev-parse --short HEAD)-$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
+
+
         # Define the static version number
-        VERSION=1.0.0
+        VERSION=1.0.1
 
         # Generate the dynamic suffix using the current date and time
         SUFFIX=$(git rev-list --count HEAD) - $(date +%Y%m%d%H%M%S)
