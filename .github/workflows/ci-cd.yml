@@ -23,7 +23,7 @@ jobs:
 
     - name: Set Version
       run: |
-           echo "IMAGE_VERSION=1datetime.datetime.now().strftime("%S")
+           echo "IMAGE_VERSION=datetime.datetime.now().strftime("%S")
            
     - name: Build and Push Docker Images
       env:
