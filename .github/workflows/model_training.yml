@@ -19,9 +19,18 @@ jobs:
         service_account_key: ${{ secrets.GCLOUD_AUTH }}
         project_id: your-project-id
 
-    - name: Trigger Model Training
+    - name: Install dependencies
+      run: |
+        gcloud components install beta
+        gcloud components install ai-platform
+
+    - name: Deploy to AI Platform
+      run: |
+        gcloud ai-platform models create "my-model" --region "us-central1"
+        gcloud ai-platform versions create "v1" --model "my-model" --region "us-central1" --origin "gcr.io/${{ secrets.GCP_PROJECT_ID }}/your-docker-image1"
+
+    - name: Trigger Cloud Build for model training
       run: |
         gcloud builds submit \
           --config=path/to/your/cloudbuild.yaml \
-          --substitutions=_MODEL_NAME=your-model-name,_ANY_OTHER_VARIABLE=any-value
-
+          --substitutions=_MODEL_NAME=my-model,_ANY_OTHER_VARIABLE=any-value
