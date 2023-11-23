@@ -1,0 +1,38 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: Build and push Docker images
+      run: |
+        docker build -t data_collection_simulation -f Dockerfile.data_collection_simulation .
+        docker build -t data_transfer_to_gcs -f Dockerfile.data_transfer_to_gcs .
+        docker build -t model_training_on_gcp -f Dockerfile.model_training_on_gcp .
+
+        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+        docker tag data_collection_simulation ${{ secrets.DOCKER_USERNAME }}/data_collection_simulation
+        docker tag data_transfer_to_gcs ${{ secrets.DOCKER_USERNAME }}/data_transfer_to_gcs
+        docker tag model_training_on_gcp ${{ secrets.DOCKER_USERNAME }}/model_training_on_gcp
+
+        docker push ${{ secrets.DOCKER_USERNAME }}/data_collection_simulation
+        docker push ${{ secrets.DOCKER_USERNAME }}/data_transfer_to_gcs
+        docker push ${{ secrets.DOCKER_USERNAME }}/model_training_on_gcp
