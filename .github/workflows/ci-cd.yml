@@ -31,7 +31,7 @@ jobs:
       run: |
 
         VERSION=1.0.1
-        SUFFIX=$(date +%Y%m%d)-$(printf "%04d" $BUILD_NUMBER)
+        SUFFIX=$(date +%Y%m%d%m%s)-$(printf "%04d" $BUILD_NUMBER)
 
         docker build -t ml-data-collection-service:${VERSION}-${SUFFIX} --label "Simulates weekly sensor data collection and uploads to Google Cloud." -f DatacollectionDockerFile .
       
