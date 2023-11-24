@@ -34,9 +34,16 @@ jobs:
         BUILD_NUMBER=$GITHUB_RUN_NUMBER
         COMMIT_HASH=$(git rev-parse HEAD)
 
-        SUFFIX=$(date +%Y%m%d)-$(printf "%04d" $BUILD_NUMBER)-$($COMMIT_HASH)
+        BUILD_NUMBER: ${{ github.run_number }}
+        COMMIT_HASH: ${{ github.sha }}
 
-        echo $SUFFIX
+        echo "Build number is: $BUILD_NUMBER"
+        echo "Sha is: $COMMIT_HASH"
+
+        # SUFFIX=$(date +%Y%m%d)-$BUILD_NUMBER-$COMMIT_HASH
+        SUFFIX=$BUILD_NUMBER-$COMMIT_HASH
+
+        echo "Suffix is: $SUFFIX"
 
         docker build -t ml-data-collection-service:${VERSION}-${SUFFIX} --label "Simulates weekly sensor data collection and uploads to Google Cloud." -f DatacollectionDockerFile .
       
