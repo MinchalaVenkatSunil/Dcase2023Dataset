@@ -37,8 +37,9 @@ jobs:
         COMMIT_HASH=$(git rev-parse HEAD)
 
         echo "Hello World!"
-        echo "$COMMIT_HASH $BUILD_NUMBER"
-        echo "$$GITHUB_ENV $GITHUB_ENV"
+        echo "Commit hash is : $COMMIT_HASH"
+        echo "Build number is: $BUILD_NUMBER"
+        echo "GITHUB_ENV is: $GITHUB_ENV"
 
         echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
         echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
