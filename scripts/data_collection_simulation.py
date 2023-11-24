@@ -38,9 +38,15 @@ def simulate_weekly_data_collection():
     fan_data = pd.read_csv(csv_file_path_fan)
     bearing_data = pd.read_csv(csv_file_path_bearing)
 
-    # Save processed data to new CSV files
-    fan_data.to_csv('/app/weekly/upload/fan_data.csv', index=False)
-    bearing_data.to_csv('/app/weekly/upload/bearing_data.csv', index=False)
+    # Specify the path to save the processed data
+    output_path = '/app/weekly/upload/'
+
+    # Ensure the output directory exists
+    os.makedirs(output_path, exist_ok=True)
+
+    # Save the processed data for weekly upload
+    fan_data.to_csv(os.path.join(output_path, 'fan_data.csv'), index=False)
+    bearing_data.to_csv(os.path.join(output_path, 'bearing_data.csv'), index=False)
 
     print("Pandas reading files completed.")
     print(f"Fan data:\n{fan_data}")
