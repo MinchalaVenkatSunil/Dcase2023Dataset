@@ -25,16 +25,6 @@ def simulate_weekly_data_collection(csv_file_path, destination_path, segment_siz
     for i in range(0, len(df), segment_size):
         segment = df.iloc[i:i + segment_size]
 
-        # Create a subdirectory for each week
-        week_directory = os.path.join(destination_path, f'week_{i // segment_size + 1}')
-        os.makedirs(week_directory, exist_ok=True)
-
-        # Copy the selected files to the week directory
-        for _, row in segment.iterrows():
-            source_file_path = row['file_path']  # Replace 'file_path' with the correct column name
-            destination_file_path = os.path.join(week_directory, os.path.basename(source_file_path))
-            shutil.copyfile(source_file_path, destination_file_path)
-
             # Upload the file to Google Cloud Storage
             upload_to_gcs(client, bucket_name, destination_file_path)
 
