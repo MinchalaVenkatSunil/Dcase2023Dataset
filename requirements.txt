@@ -1,4 +1,4 @@
-import os
-import shutil
-import pandas as pd
-from google.cloud import storage
+pip install os
+pip install shutil
+pip install pandas as pd
+
