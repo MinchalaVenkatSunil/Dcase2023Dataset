@@ -31,7 +31,7 @@ def upload_to_gcs(client, bucket_name, file_path):
     blob.upload_from_filename(file_path)
 
 if __name__ == "__main__":
-    csv_file_path = "/app/attributes_00.csv"
+    csv_file_path = "/app/fan_attributes_00.csv"
     destination_path = "/app/data"
     segment_size = 100
     bucket_name = "dcase2023dataset"
