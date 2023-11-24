@@ -29,10 +29,15 @@ jobs:
 
     - name: Build and push Docker images
       run: |
-
+        
         VERSION=1.0.1
-        SUFFIX=$(date +%Y%m%d)-$(printf "%04d" $BUILD_NUMBER)
+        SUFFIX=$(date +%Y%m%d%m%s)-$(printf "%04d" $BUILD_NUMBER)
 
+        BUILD_NUMBER=$GITHUB_RUN_NUMBER
+        COMMIT_HASH=$(git rev-parse HEAD)
+        echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
+        echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
+        
         docker build -t ml-data-collection-service:${VERSION}-${SUFFIX} --label "Simulates weekly sensor data collection and uploads to Google Cloud." -f DatacollectionDockerFile .
       
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKENS }}
