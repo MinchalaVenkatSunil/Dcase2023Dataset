@@ -1,33 +1,7 @@
 import os
 from google.cloud import storage
 
-def upload_csv_to_gcs(
-    csv_file_path_fan, 
-    csv_file_path_bearing,
-    bucket_name, 
-    destination_blob_name_fan, 
-    destination_blob_name_bearing, 
-    key_path):
-    
-    print(f"Uploading CSV files to Google Cloud Storage...")
-    
-    # Create a Google Cloud Storage client with explicit credentials
-    client = storage.Client.from_service_account_json(key_path)
-
-    # Upload the CSV files to Google Cloud Storage
-    bucket = client.get_bucket(bucket_name)
-    
-    # Upload fan attributes CSV
-    blob_fan = bucket.blob(destination_blob_name_fan)
-    blob_fan.upload_from_filename(csv_file_path_fan)
-    print(f"Uploaded fan attributes CSV to {destination_blob_name_fan}")
-
-    # Upload bearing attributes CSV
-    blob_bearing = bucket.blob(destination_blob_name_bearing)
-    blob_bearing.upload_from_filename(csv_file_path_bearing)
-    print(f"Uploaded bearing attributes CSV to {destination_blob_name_bearing}")
-
-if __name__ == "__main__":
+def simulate_weekly_data_collection():
 
     print(" STARTING 1...")
 
@@ -53,12 +27,25 @@ if __name__ == "__main__":
 
     print(" STARTING 5...")
 
+    print(f"Uploading CSV files to Google Cloud Storage...")
+    
+    # Create a Google Cloud Storage client with explicit credentials
+    client = storage.Client.from_service_account_json(key_path)
+
+    # Upload the CSV files to Google Cloud Storage
+    bucket = client.get_bucket(bucket_name)
+    
+    # Upload fan attributes CSV
+    blob_fan = bucket.blob(destination_blob_name_fan)
+    blob_fan.upload_from_filename(csv_file_path_fan)
+    print(f"Uploaded fan attributes CSV to {destination_blob_name_fan}")
+
+    # Upload bearing attributes CSV
+    blob_bearing = bucket.blob(destination_blob_name_bearing)
+    blob_bearing.upload_from_filename(csv_file_path_bearing)
+    print(f"Uploaded bearing attributes CSV to {destination_blob_name_bearing}")
+
+if __name__ == "__main__":
+
     # Run the upload script
-    upload_csv_to_gcs(
-        csv_file_path_fan,
-        csv_file_path_bearing,
-        bucket_name,
-        destination_blob_name_fan,
-        destination_blob_name_bearing,
-        key_path
-    )
+    simulate_weekly_data_collection()
