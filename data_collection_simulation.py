@@ -15,13 +15,13 @@ if __name__ == "__main__":
     csv_file_path = "/app/attributes_00.csv"
 
     # Replace with your Google Cloud Storage bucket name
-    bucket_name = "dcase2023dataset"
+    bucket_name = "dcase2023bucketdataset"
 
     # Replace with the desired destination blob name in GCS
     destination_blob_name = "data/attributes_00.csv"
 
     # Replace with the actual path to your service account key file
-    key_path = "/app/newtestproject-405920-4be1a3498a32.json"
+    key_path = "/app/mldocker-4713e7f8b358.json"
 
     # Run the upload script
     upload_csv_to_gcs(csv_file_path, bucket_name, destination_blob_name, key_path)
