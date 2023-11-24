@@ -1,31 +1,58 @@
 # data_collection_simulation.py
 
 import os
-import time
-import random
-import json
+import shutil
+import pandas as pd
+from google.cloud import storage
 
-def simulate_data_collection():
-    # Simulate collecting data for a week
-    for day in range(7):
-        # Simulate hourly data collection
-        for hour in range(24):
-            # Simulate data for each hour
-            data = {
-                'timestamp': time.time(),
-                'label': random.choice(['normal', 'anomaly']),
-                'other_info': 'additional metadata'
-            }
+def simulate_weekly_data_collection(csv_file_path, destination_path, segment_size=100, bucket_name="your-gcs-bucket"):
+    # Ensure the destination directory exists
+    os.makedirs(destination_path, exist_ok=True)
 
-            # Save the data to a file
-            filename = f"data_{day}_{hour}.json"
-            with open(filename, 'w') as f:
-                json.dump(data, f)
+    # Load the CSV file into a DataFrame
+    df = pd.read_csv(csv_file_path)
 
-            print(f"Data collected and saved: {filename}")
+    # Shuffle the DataFrame for randomness
+    df = df.sample(frac=1).reset_index(drop=True)
 
-            # Pause for a short time to simulate hourly intervals
-            time.sleep(1)
+    # Create a Google Cloud Storage client
+    client = storage.Client()
+
+    # Simulate weekly data collection and upload to GCS
+    for i in range(0, len(df), segment_size):
+        segment = df.iloc[i:i + segment_size]
+
+        # Create a subdirectory for each week
+        week_directory = os.path.join(destination_path, f'week_{i // segment_size + 1}')
+        os.makedirs(week_directory, exist_ok=True)
+
+        # Copy the selected files to the week directory
+        for _, row in segment.iterrows():
+            source_file_path = row['file_path']
+            destination_file_path = os.path.join(week_directory, os.path.basename(source_file_path))
+            shutil.copyfile(source_file_path, destination_file_path)
+
+            # Upload the file to Google Cloud Storage
+            upload_to_gcs(client, bucket_name, destination_file_path)
+
+def upload_to_gcs(client, bucket_name, file_path):
+    """Upload a file to Google Cloud Storage."""
+    bucket = client.get_bucket(bucket_name)
+    blob = bucket.blob(os.path.basename(file_path))
+    blob.upload_from_filename(file_path)
 
 if __name__ == "__main__":
-    simulate_data_collection()
+    # Replace with the actual path to your CSV file
+    csv_file_path = "/path/to/your/dataset.csv"
+    
+    # Replace with the actual destination directory for simulated weekly data collection
+    destination_path = "/path/to/simulated_weekly_data_collection"
+
+    # Specify the number of rows to include in each weekly segment
+    segment_size = 100
+
+    # Replace with your Google Cloud Storage bucket name
+    bucket_name = "your-gcs-bucket"
+
+    # Run the simulation
+    simulate_weekly_data_collection(csv_file_path, destination_path, segment_size, bucket_name)
