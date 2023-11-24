@@ -40,8 +40,9 @@ jobs:
         echo "Commit hash is : $COMMIT_HASH"
         echo "Build number is: $BUILD_NUMBER"
         echo "GITHUB_ENV is: $GITHUB_ENV"
+        echo ">> value is: $COMMIT_HASH >> $GITHUB_ENV"
 
-        echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
+        echo "BUILD_NUMBER is: $BUILD_NUMBER" >> $GITHUB_ENV
         echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
 
         # docker build -t ml-data-collection-service:${VERSION}-${SUFFIX} --label "Simulates weekly sensor data collection and uploads to Google Cloud." -f DatacollectionDockerFile .
