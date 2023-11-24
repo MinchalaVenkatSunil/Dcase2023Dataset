@@ -9,8 +9,6 @@ COPY attrbutes_00.csv .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip install pandas
-
 COPY data_collection_simulation.py .
 
 # Expose port 8080
