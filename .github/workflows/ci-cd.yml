@@ -34,18 +34,9 @@ jobs:
         SUFFIX=$(date +%Y%m%d)-$(printf "%04d" $BUILD_NUMBER)
 
         docker build -t ml-data-collection-service:${VERSION}-${SUFFIX} --label "Simulates weekly sensor data collection and uploads to Google Cloud." -f DatacollectionDockerFile .
-        docker build -t ml-data-transfer-service:${VERSION}-${SUFFIX} --label "Transfers local data to Google Cloud Storage on a simulated weekly basis." -f DataTransferDockerFile .
-        docker build -t ml-model-training-service:${VERSION}-${SUFFIX} --label "Configures and runs model training on Google Cloud using uploaded data." -f ModelTrainingDockerFile .
-        docker build -t ml-inference-service:${VERSION}-${SUFFIX} --label "Evaluate and update the model for local inference if it performs better." -f ModelEvaluationandUpdateDockerFile .
-
+      
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKENS }}
 
         docker tag ml-data-collection-service:${VERSION}-${SUFFIX} ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION}-${SUFFIX}
-        docker tag ml-data-transfer-service:${VERSION}-${SUFFIX} ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service:${VERSION}-${SUFFIX}
-        docker tag ml-model-training-service:${VERSION}-${SUFFIX} ${{ secrets.DOCKER_USERNAME }}/ml-model-training-service:${VERSION}-${SUFFIX}
-        docker tag ml-inference-service:${VERSION}-${SUFFIX} ${{ secrets.DOCKER_USERNAME }}/ml-inference-service:${VERSION}-${SUFFIX}
 
         docker push ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION}-${SUFFIX}
-        docker push ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service:${VERSION}-${SUFFIX}
-        docker push ${{ secrets.DOCKER_USERNAME }}/ml-model-training-service:${VERSION}-${SUFFIX}
-        docker push ${{ secrets.DOCKER_USERNAME }}/ml-inference-service:${VERSION}-${SUFFIX}
