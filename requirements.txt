@@ -1,4 +1,1 @@
-pip install os
-pip install shutil
-pip install pandas as pd
 
