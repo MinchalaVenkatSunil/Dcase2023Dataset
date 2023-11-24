@@ -11,7 +11,7 @@ def simulate_weekly_data_collection(csv_file_path, destination_path, segment_siz
     df = pd.read_csv(csv_file_path)
     df = df.sample(frac=1).reset_index(drop=True)
 
-    key_path = "/app/key.json"
+    key_path = "/app/mldocker-4713e7f8b358.json"
     client = storage.Client.from_service_account_json(key_path)
 
     for i in range(0, len(df), segment_size):
@@ -20,7 +20,7 @@ def simulate_weekly_data_collection(csv_file_path, destination_path, segment_siz
         os.makedirs(week_directory, exist_ok=True)
 
         for _, row in segment.iterrows():
-            source_file_path = row['file_path']
+            source_file_path = row['file_name']
             destination_file_path = os.path.join(week_directory, os.path.basename(source_file_path))
             shutil.copyfile(source_file_path, destination_file_path)
             upload_to_gcs(client, bucket_name, destination_file_path)
