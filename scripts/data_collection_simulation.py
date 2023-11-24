@@ -1,5 +1,6 @@
 import os
 from google.cloud import storage
+import pandas as pd
 
 def simulate_weekly_data_collection():
 
@@ -44,6 +45,10 @@ def simulate_weekly_data_collection():
     blob_bearing = bucket.blob(destination_blob_name_bearing)
     blob_bearing.upload_from_filename(csv_file_path_bearing)
     print(f"Uploaded bearing attributes CSV to {destination_blob_name_bearing}")
+
+    fan_data.to_csv('path/to/weekly/upload/fan_data.csv', index=False)
+    bearing_data.to_csv('path/to/weekly/upload/bearing_data.csv', index=False)
+
 
 if __name__ == "__main__":
 
