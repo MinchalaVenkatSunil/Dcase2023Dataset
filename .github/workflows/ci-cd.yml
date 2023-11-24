@@ -33,12 +33,12 @@ jobs:
         VERSION=1.0.1
         BUILD_NUMBER=$GITHUB_RUN_NUMBER
         COMMIT_HASH=$(git rev-parse HEAD)
-        SUFFIX=$COMMIT_HASH
+        VERSION_TAG="$VERSION-$COMMIT_HASH"
 
-        docker build -t ml-data-collection-service:${VERSION}-${SUFFIX} --label "Simulates weekly sensor data collection and uploads to Google Cloud." -f DatacollectionDockerFile .
+        docker build -t ml-data-collection-service:${VERSION_TAG} --label "Simulates weekly sensor data collection and uploads to Google Cloud." -f DatacollectionDockerFile .
       
-        docker login -u ${{secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKENS }}
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKENS }}
 
-        docker tag ml-data-collection-service:${VERSION}-${SUFFIX} ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION}-${SUFFIX}
+        docker tag ml-data-collection-service:${VERSION_TAG} ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION_TAG}
 
-        docker push ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION}-${SUFFIX}
+        docker push ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION_TAG}
