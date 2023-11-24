@@ -9,7 +9,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-     - feature
+     - main
 
 jobs:
   build:
