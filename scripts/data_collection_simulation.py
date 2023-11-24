@@ -11,7 +11,7 @@ def simulate_weekly_data_collection(csv_file_path, destination_path, segment_siz
     df = pd.read_csv(csv_file_path)
     df = df.sample(frac=1).reset_index(drop=True)
 
-    key_path = "/app/key.json"
+    key_path = "/app/mldocker-4713e7f8b358.json"
     client = storage.Client.from_service_account_json(key_path)
 
     for i in range(0, len(df), segment_size):
