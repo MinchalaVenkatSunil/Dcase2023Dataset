@@ -11,8 +11,8 @@ on:
     branches:
       - main
       - feature
-      - dev
-      - prod
+      - staging
+      - release
       - master
 
 jobs:
@@ -33,11 +33,17 @@ jobs:
 
       - name: Build and push Docker images
         run: |
-          VERSION=1.0.1
-          BUILD_NUMBER=$GITHUB_RUN_NUMBER
-          COMMIT_HASH=$(git rev-parse HEAD)
-          VERSION_TAG="$VERSION-$BUILD_NUMBER"
-          #VERSION_TAG="$VERSION-$COMMIT_HASH"
+          # Define versioning variables using Git tags
+          VERSION=$(git describe --abbrev=0 --tags)
+          TAG_COMMIT_HASH=$(git rev-list -n 1 $VERSION)
+
+          # Ensure the version is a semantic version
+          if [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            VERSION_TAG=$VERSION-$TAG_COMMIT_HASH
+          else
+            echo "Error: Git tag is not a semantic version."
+            exit 1
+          fi
 
           if [ "$GITHUB_EVENT_NAME" == "push" ]; then
             # Only build and push Docker image for pushes to the main branch
