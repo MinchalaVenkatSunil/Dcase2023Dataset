@@ -5,7 +5,7 @@ import shutil
 import pandas as pd
 from google.cloud import storage
 
-def simulate_weekly_data_collection(csv_file_path, destination_path, segment_size=100, bucket_name="your-gcs-bucket"):
+def simulate_weekly_data_collection(csv_file_path, destination_path, segment_size=100, bucket_name="dcase2023dataset"):
     # Ensure the destination directory exists
     os.makedirs(destination_path, exist_ok=True)
 
@@ -43,16 +43,16 @@ def upload_to_gcs(client, bucket_name, file_path):
 
 if __name__ == "__main__":
     # Replace with the actual path to your CSV file
-    csv_file_path = "/path/to/your/dataset.csv"
+    csv_file_path = "C:/Users/dheer/Downloads/dev_fan-20231124T025538Z-001/dev_fan/fan/dataset.csv"
     
     # Replace with the actual destination directory for simulated weekly data collection
-    destination_path = "/path/to/simulated_weekly_data_collection"
+    destination_path = "/app/data/dataset.csv"
 
     # Specify the number of rows to include in each weekly segment
     segment_size = 100
 
     # Replace with your Google Cloud Storage bucket name
-    bucket_name = "your-gcs-bucket"
+    bucket_name = "dcase2023dataset"
 
     # Run the simulation
     simulate_weekly_data_collection(csv_file_path, destination_path, segment_size, bucket_name)
