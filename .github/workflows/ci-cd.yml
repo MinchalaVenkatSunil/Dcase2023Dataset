@@ -41,7 +41,7 @@ jobs:
 
           if [ "$GITHUB_EVENT_NAME" == "push" ]; then
             # Only build and push Docker image for pushes to the main branch
-            docker build -t ml-data-collection-service:${VERSION_TAG} --label "Simulates weekly sensor data collection and uploads to Google Cloud." -f DatacollectionDockerFile .
+            docker build -t ml-data-collection-service:${VERSION_TAG} --label "Simulates weekly sensor data collection and uploads to Google Cloud." -f dockerfiles/DatacollectionDockerFile .
 
             docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKENS }}
 
