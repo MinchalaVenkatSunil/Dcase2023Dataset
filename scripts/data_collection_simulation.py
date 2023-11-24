@@ -1,38 +1,88 @@
-# data_collection_simulation.py
-
 import os
-import shutil
-import pandas as pd
 from google.cloud import storage
+import pandas as pd
+from datetime import datetime
 
-def simulate_weekly_data_collection(csv_file_path, destination_path, segment_size=100, bucket_name="dcase2023dataset"):
-    os.makedirs(destination_path, exist_ok=True)
+# def simulate_weekly_data_collection_other_solution():
+#     """
+#     Simulates weekly data collection and uploads CSV files to Google Cloud Storage.
+#     """
+#     # File paths for CSV files
+#     csv_file_path_fan = "/app/fan_attributes_00.csv"
+#     csv_file_path_bearing = "/app/bearing_attributes_00.csv"
 
-    df = pd.read_csv(csv_file_path)
-    df = df.sample(frac=1).reset_index(drop=True)
+#     # Google Cloud Storage configuration
+#     bucket_name = "dcase2023bucketdataset"
+    
+#     # Include year, month, and day in the folder structure
+#     current_date = datetime.now().strftime("%Y/%m/%d")
+#     destination_blob_name_fan = f"data/{current_date}/fan_attributes_00.csv"
+#     destination_blob_name_bearing = f"data/{current_date}/bearing_attributes_00.csv"
+    
+#     key_path = "/app/mldocker-4713e7f8b358.json"
 
-    key_path = "/app/mldocker-4713e7f8b358.json"
+#     # Initialize Google Cloud Storage client
+#     client = storage.Client.from_service_account_json(key_path)
+#     bucket = client.get_bucket(bucket_name)
+
+#     # Upload CSV files to Google Cloud Storage
+#     blob_fan = bucket.blob(destination_blob_name_fan)
+#     blob_fan.upload_from_filename(csv_file_path_fan)
+
+#     blob_bearing = bucket.blob(destination_blob_name_bearing)
+#     blob_bearing.upload_from_filename(csv_file_path_bearing)
+
+#     """
+#     Simulates weekly data collection and uploads CSV files to local OS.
+#     """
+#     # Local file processing with pandas
+#     fan_data = pd.read_csv(csv_file_path_fan)
+#     bearing_data = pd.read_csv(csv_file_path_bearing)
+
+#     # Output path for saving processed data locally
+#     output_path = f'/app/weekly/upload/{current_date}/'
+#     os.makedirs(output_path, exist_ok=True)
+
+#     # Save the processed data locally for weekly upload
+#     fan_data.to_csv(os.path.join(output_path, 'fan_data.csv'), index=False)
+#     bearing_data.to_csv(os.path.join(output_path, 'bearing_data.csv'), index=False)
+
+def download_data_from_gcs(bucket_name, source_blob_name, destination_file_path, key_path):
+    """Download a file from Google Cloud Storage."""
     client = storage.Client.from_service_account_json(key_path)
-
-    for i in range(0, len(df), segment_size):
-        segment = df.iloc[i:i + segment_size]
-        week_directory = os.path.join(destination_path, f'week_{i // segment_size + 1}')
-        os.makedirs(week_directory, exist_ok=True)
-
-        for _, row in segment.iterrows():
-            source_file_path = row['file_name']
-            destination_file_path = os.path.join(week_directory, os.path.basename(source_file_path))
-            shutil.copyfile(source_file_path, destination_file_path)
-            upload_to_gcs(client, bucket_name, destination_file_path)
-
-def upload_to_gcs(client, bucket_name, file_path):
     bucket = client.get_bucket(bucket_name)
-    blob = bucket.blob(os.path.basename(file_path))
-    blob.upload_from_filename(file_path)
+    blob = bucket.blob(source_blob_name)
+    blob.download_to_filename(destination_file_path)
+
+def simulate_weekly_data_collection():
+    """
+    Assuming the source data will be available weekly under the secured GCP bucket "dcase2023bucketdataset".
+    Or we can also assume and work with any server
+    Simulates weekly data collection and downloads CSV files from Google Cloud Storage.
+    """
+
+    print("Starting the weekly data collection and download script...")
+
+    # Google Cloud Storage configuration
+    bucket_name = os.environ.get("GCS_BUCKET_NAME", "dcase2023bucketdataset")
+    key_path = os.environ.get("GCS_KEY_PATH", "/app/mldocker-4713e7f8b358.json")
+
+    # Include year, month, and day in the folder structure
+    current_date = datetime.now().strftime("%Y/%m/%d")
+    destination_folder = f'/app/weekly/upload/{current_date}/'
+    os.makedirs(destination_folder, exist_ok=True)
+
+    # List of machinery types
+    machinery_types = ["fan", "bearing", "gearbox", "slider", "ToyCar", "ToyTrain", "valve"]
+
+    # Download CSV files for each machinery type
+    for machinery_type in machinery_types:
+        source_blob_name = f"DcaseDevDataSet/{machinery_type}/attributes_00.csv"
+        destination_file_path = os.path.join(destination_folder, f'{machinery_type}_attributes_00.csv')
+        download_data_from_gcs(bucket_name, source_blob_name, destination_file_path, key_path)
+        print(f"Downloaded {machinery_type} data from Google Cloud Storage to {destination_file_path}")
+
+    print("Weekly data collection and download script completed.")
 
 if __name__ == "__main__":
-    csv_file_path = "/app/fan_attributes_00.csv"
-    destination_path = "/app/data"
-    segment_size = 100
-    bucket_name = "dcase2023dataset"
-    simulate_weekly_data_collection(csv_file_path, destination_path, segment_size, bucket_name)
+    simulate_weekly_data_collection()
