@@ -31,7 +31,7 @@ def simulate_weekly_data_collection(csv_file_path, destination_path, segment_siz
 
         # Copy the selected files to the week directory
         for _, row in segment.iterrows():
-            source_file_path = row['file_path']
+            source_file_path = row['file_path']  # Replace 'file_path' with the correct column name
             destination_file_path = os.path.join(week_directory, os.path.basename(source_file_path))
             shutil.copyfile(source_file_path, destination_file_path)
 
