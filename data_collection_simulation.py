@@ -15,8 +15,11 @@ def simulate_weekly_data_collection(csv_file_path, destination_path, segment_siz
     # Shuffle the DataFrame for randomness
     df = df.sample(frac=1).reset_index(drop=True)
 
-    # Create a Google Cloud Storage client
-    client = storage.Client()
+    # Set the path to the service account key file
+    key_path = "/app/newtestproject-405920-4be1a3498a32.json"
+
+    # Create a Google Cloud Storage client with explicit credentials
+    client = storage.Client.from_service_account_json(key_path)
 
     # Simulate weekly data collection and upload to GCS
     for i in range(0, len(df), segment_size):
@@ -43,7 +46,7 @@ def upload_to_gcs(client, bucket_name, file_path):
 
 if __name__ == "__main__":
     # Replace with the actual path to your CSV file
-    csv_file_path = os.path.join(os.getcwd(), "attributes_00.csv")
+    csv_file_path = "/app/attributes_00.csv"
     
     # Replace with the actual destination directory for simulated weekly data collection
     destination_path = "/app/data"
