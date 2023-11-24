@@ -62,12 +62,8 @@ def simulate_weekly_data_collection():
     print("Starting the weekly data collection and download script...")
 
     # Google Cloud Storage configuration
-    # bucket_name = "dcase2023bucketdataset"
-    # key_path = "/app/mldocker-4713e7f8b358.json"
-
-    # Google Cloud Storage configuration
-    bucket_name = os.environ.get("GCS_BUCKET_NAME", "")
-    key_path = os.environ.get("GCS_KEY_PATH", "")
+    bucket_name = os.environ.get("GCS_BUCKET_NAME", "dcase2023bucketdataset")
+    key_path = os.environ.get("GCS_KEY_PATH", "/app/mldocker-4713e7f8b358.json")
 
     # Include year, month, and day in the folder structure
     current_date = datetime.now().strftime("%Y/%m/%d")
