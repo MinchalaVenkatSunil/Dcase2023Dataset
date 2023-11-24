@@ -2,7 +2,7 @@
 
 import os
 import shutil
-import pandas as pd
+import pandas 
 from google.cloud import storage
 
 def simulate_weekly_data_collection(csv_file_path, destination_path, segment_size=100, bucket_name="dcase2023dataset"):
@@ -10,7 +10,7 @@ def simulate_weekly_data_collection(csv_file_path, destination_path, segment_siz
     os.makedirs(destination_path, exist_ok=True)
 
     # Load the CSV file into a DataFrame
-    df = pd.read_csv(csv_file_path)
+    df = pandas.read_csv(csv_file_path)
 
     # Shuffle the DataFrame for randomness
     df = df.sample(frac=1).reset_index(drop=True)
