@@ -49,10 +49,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v
 
       - name: Set up Docker
-        uses: docker/setup-docker-action@v2
+        uses: docker/setup-docker-action@v2.6.1
         with:
           dockerfile: dockerfiles/MultistageDockerfile
           context: .
