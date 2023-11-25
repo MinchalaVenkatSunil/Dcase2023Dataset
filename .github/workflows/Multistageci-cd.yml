@@ -49,10 +49,13 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v
+        uses: actions/checkout@v2
 
       - name: Set up Docker
-        uses: docker/setup-docker-action@v2.6.1
+        uses: ./
+        #uses: docker-practice/actions-setup-docker@master
+        # As suggested here:  https://github.com/marketplace/actions/setup-docker
+
         with:
           dockerfile: dockerfiles/MultistageDockerfile
           context: .
