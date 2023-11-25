@@ -17,5 +17,6 @@ COPY scripts/Trigger.py .
 # Set the environment variable for Google Cloud Storage credentials
 ENV GOOGLE_APPLICATION_CREDENTIALS=/app/newtestproject-405920-4be1a3498a32.json
 
+
 # Run the application
 CMD ["python", "Trigger.py"]
