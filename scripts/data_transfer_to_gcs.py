@@ -10,8 +10,9 @@ def upload_data_to_gcs(bucket_name, source_folder, key_path):
     bucket = client.get_bucket(bucket_name)
 
     # Include year, month, and day in the folder structure
-    current_date = datetime.now().strftime("%Y/%m/%d")
-    destination_folder = f'data/{current_date}/weekly_upload/'
+    #current_date = datetime.now().strftime("%Y/%m/%d")
+    destination_folder = f'/data/weekly/upload/'
+    # destination_folder = f'data/{current_date}/weekly_upload/'
 
     print(f"Does the folder exist: {source_folder}")
 
@@ -37,7 +38,7 @@ def main():
 
     # Google Cloud Storage configuration
     bucket_name = os.environ.get("GCS_BUCKET_NAME", "dcase2023dataset")
-    key_path = os.environ.get("GCS_KEY_PATH", "/app/newtestproject-405920-4be1a3498a32.json")
+    key_path = os.environ.get("GCS_KEY_PATH", "/app/mldocker-4713e7f8b358.json")
 
     # Source folder containing the data to be uploaded
     source_folder = 'app/data/weekly/upload'
