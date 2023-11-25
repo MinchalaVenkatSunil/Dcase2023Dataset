@@ -71,21 +71,16 @@ def transfer_data_to_gcs(local_data_folder, bucket_name, key_path):
         for root, dirs, files in os.walk(local_data_folder):
             for file in files:
                 local_file_path = os.path.join(root, file)
-
-                # Get the relative path without the starting 'local_data_folder'
-                relative_path = os.path.relpath(local_file_path, local_data_folder)
-
-                # Combine with the desired prefix and replace os.sep with '/'
-                destination_blob_name = f"weekly/upload/{relative_path.replace(os.sep, '/')}"
-
-                # Upload the file to Google Cloud Storage
+                destination_blob_name = os.path.relpath(local_file_path, local_data_folder)
+                
+                # print(f"\nProcessing: {local_file_path}")
                 upload_to_gcs(local_file_path, bucket_name, destination_blob_name, key_path)
         else:
             print(f"The folder '{local_data_folder}' does not exist.")
 
 if __name__ == "__main__":
     # Set configuration details
-    local_data_folder = "/app/data/weekly/upload/" 
+    local_data_folder = "/app/data/weekly/upload/"  
     bucket_name = os.environ.get("GCS_BUCKET_NAME", "dcase2023bucketdataset")
     key_path = os.environ.get("GCS_KEY_PATH", "/app/mldocker-4713e7f8b358.json")
 
