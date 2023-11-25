@@ -34,7 +34,7 @@ FROM python:3.8-slim as upload_to_gcs_stage
 WORKDIR /app
 
 # Install the necessary dependencies
-# RUN pip install --no-cache-dir google-cloud-storage==1.43.0
+RUN pip install --no-cache-dir google-cloud-storage==1.43.0
 # RUN pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt
 
 # Copy the Python script for uploading data to Google Cloud Storage
