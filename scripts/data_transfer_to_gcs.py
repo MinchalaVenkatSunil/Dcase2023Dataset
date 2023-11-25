@@ -63,16 +63,30 @@ def upload_to_gcs(local_file_path, bucket_name, destination_blob_name, key_path)
     bucket = client.get_bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
     blob.upload_from_filename(local_file_path)
+    print(f"Uploaded: {local_file_path} to {destination_blob_name}")
 
 def transfer_data_to_gcs(local_data_folder, bucket_name, key_path):
     """Transfer locally collected data to Google Cloud Storage."""
+    print("---------------------------------------------------")
+    print(f"Current Working Directory: {os.getcwd()}")
+    print(f"Script Directory: {os.path.dirname(os.path.realpath(__file__))}")
+    print(f"Starting data transfer from {local_data_folder} to {bucket_name}...")
+
     for root, dirs, files in os.walk(local_data_folder):
         for file in files:
             local_file_path = os.path.join(root, file)
             destination_blob_name = os.path.relpath(local_file_path, local_data_folder)
+            
+            print(f"\nProcessing: {local_file_path}")
             upload_to_gcs(local_file_path, bucket_name, destination_blob_name, key_path)
 
+    print("Data transfer completed.")
+    print("---------------------------------------------------")
+
 if __name__ == "__main__":
+    print("---------------------------------------------------")
+    print("Starting main...")
+    
     # Set configuration details
     local_data_folder = "/app/weekly/upload/"  # Adjust to the actual local data folder
     bucket_name = os.environ.get("GCS_BUCKET_NAME", "dcase2023bucketdataset")
@@ -80,3 +94,7 @@ if __name__ == "__main__":
 
     # Transfer data to Google Cloud Storage
     transfer_data_to_gcs(local_data_folder, bucket_name, key_path)
+    
+    print("Main completed.")
+    print("---------------------------------------------------")
+
