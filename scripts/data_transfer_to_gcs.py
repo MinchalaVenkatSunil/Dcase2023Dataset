@@ -1,35 +1,37 @@
 import os
 from google.cloud import storage
-import json
+from datetime import datetime
 
-def upload_to_gcs(data_directory, bucket_name):
-    # Set your Google Cloud Storage credentials
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "path/to/your/keyfile.json"
+def upload_data_to_gcs(bucket_name, source_folder, key_path):
+    """Upload data to Google Cloud Storage."""
+    client = storage.Client.from_service_account_json(key_path)
+    bucket = client.get_bucket(bucket_name)
 
-    # Create a storage client
-    storage_client = storage.Client()
+    # Include year, month, and day in the folder structure
+    current_date = datetime.now().strftime("%Y/%m/%d")
+    destination_folder = f'data/{current_date}/weekly_upload/'
 
-    # Get the bucket
-    bucket = storage_client.get_bucket(bucket_name)
+    # List all files in the source folder
+    files = [f for f in os.listdir(source_folder) if os.path.isfile(os.path.join(source_folder, f))]
 
-    # Iterate over files in the data directory
-    for filename in os.listdir(data_directory):
-        if filename.endswith(".json"):
-            file_path = os.path.join(data_directory, filename)
+    # Upload each file to Google Cloud Storage
+    for file_name in files:
+        source_file_path = os.path.join(source_folder, file_name)
+        destination_blob_name = os.path.join(destination_folder, file_name)
+        blob = bucket.blob(destination_blob_name)
+        blob.upload_from_filename(source_file_path)
+        print(f"Uploaded {file_name} to Google Cloud Storage at {destination_blob_name}")
 
-            # Read metadata from the JSON file
-            with open(file_path, "r") as f:
-                metadata = json.load(f)
+def main():
+    # Google Cloud Storage configuration
+    bucket_name = os.environ.get("GCS_BUCKET_NAME", "dcase2023dataset")
+    key_path = os.environ.get("GCS_KEY_PATH", "/app/mldocker-4713e7f8b358.json")
 
-            # Upload the file to GCS with metadata
-            blob = bucket.blob(filename)
-            blob.upload_from_filename(file_path, content_type="application/json", metadata=metadata)
+    # Source folder containing the data to be uploaded
+    source_folder = '/data/weekly/upload/'
 
-            print(f"File {filename} uploaded to GCS with metadata: {metadata}")
+    # Upload data to Google Cloud Storage
+    upload_data_to_gcs(bucket_name, source_folder, key_path)
 
 if __name__ == "__main__":
-    # Replace these values with your actual data directory and GCS bucket name
-    data_directory = "/path/to/your/data/directory"
-    bucket_name = "your-gcs-bucket-name"
-
-    upload_to_gcs(data_directory, bucket_name)
+    main()
