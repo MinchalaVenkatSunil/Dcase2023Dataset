@@ -8,11 +8,11 @@ WORKDIR /app
 RUN pip install --no-cache-dir google-cloud-storage==1.43.0
 
 # Copy the Python script for downloading and storing data
-COPY download_and_store_data.py .
+COPY scripts/data_collection_simulation.py .
 COPY mldocker-4713e7f8b358.json .
 
 # Run the Python script to download and store data in a local directory
-RUN python download_and_store_data.py
+RUN python data_collection_simulation.py
 
 # Stage 2: Upload data to Google Cloud Storage
 FROM python:3.8-slim as upload_to_gcs_stage
