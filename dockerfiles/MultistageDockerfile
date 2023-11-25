@@ -7,6 +7,8 @@ WORKDIR /app
 COPY scripts/data_collection_simulation.py .
 COPY mldocker-4713e7f8b358.json .
 
+RUN pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt
+
 # Run the Python script to download and store data in a local directory
 RUN python data_collection_simulation.py
 
