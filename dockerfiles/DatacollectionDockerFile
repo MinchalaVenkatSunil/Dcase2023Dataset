@@ -22,4 +22,6 @@ COPY scripts/data_collection_simulation.py .
 # Expose port 8080
 EXPOSE 8080
 
+WORKDIR /data
+
 ENTRYPOINT ["python", "data_collection_simulation.py"]
