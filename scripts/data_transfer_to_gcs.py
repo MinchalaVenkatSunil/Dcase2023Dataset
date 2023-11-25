@@ -12,15 +12,18 @@ def upload_data_to_gcs(bucket_name, source_folder, key_path):
     destination_folder = f'data/{current_date}/weekly_upload/'
 
     # List all files in the source folder
-    files = [f for f in os.listdir(source_folder) if os.path.isfile(os.path.join(source_folder, f))]
+    if os.path.exists(source_folder):
+        files = [f for f in os.listdir(source_folder) if os.path.isfile(os.path.join(source_folder, f))]
 
-    # Upload each file to Google Cloud Storage
-    for file_name in files:
-        source_file_path = os.path.join(source_folder, file_name)
-        destination_blob_name = os.path.join(destination_folder, file_name)
-        blob = bucket.blob(destination_blob_name)
-        blob.upload_from_filename(source_file_path)
-        print(f"Uploaded {file_name} to Google Cloud Storage at {destination_blob_name}")
+        # Upload each file to Google Cloud Storage
+        for file_name in files:
+            source_file_path = os.path.join(source_folder, file_name)
+            destination_blob_name = os.path.join(destination_folder, file_name)
+            blob = bucket.blob(destination_blob_name)
+            blob.upload_from_filename(source_file_path)
+            print(f"Uploaded {file_name} to Google Cloud Storage at {destination_blob_name}")
+    else:
+        print(f"The directory '{source_folder}' does not exist.")
 
 def main():
     # Google Cloud Storage configuration
