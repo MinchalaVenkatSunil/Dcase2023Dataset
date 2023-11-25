@@ -9,7 +9,11 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
+<<<<<<< HEAD
       # - BranchFromMultistage
+=======
+      - BranchFromMultistage
+>>>>>>> 0ae36206d9e3cda49e292c02f948dac8a607d188
       - main
 
 jobs:
