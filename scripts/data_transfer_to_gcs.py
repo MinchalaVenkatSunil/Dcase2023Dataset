@@ -72,6 +72,26 @@ def transfer_data_to_gcs(local_data_folder, bucket_name, key_path):
     print(f"Script Directory: {os.path.dirname(os.path.realpath(__file__))}")
     print(f"Starting data transfer from {local_data_folder} to {bucket_name}...")
 
+    # Check if the specified path exists
+    if os.path.exists(local_data_folder):
+        print(f"Contents of the '{local_data_folder}' folder:")
+        
+        # Get the list of files and directories
+        contents = os.listdir(local_data_folder)
+        
+        # Print each item in the list
+        for item in contents:
+            print(item)
+    else:
+        print(f"The folder '{local_data_folder}' does not exist.")
+
+        # Get the list of files and directories
+        contents = os.listdir(local_data_folder)
+        
+        # Print each item in the list
+        for item in contents:
+            print("Items: {item}")
+
     for root, dirs, files in os.walk(local_data_folder):
         for file in files:
             local_file_path = os.path.join(root, file)
@@ -88,7 +108,7 @@ if __name__ == "__main__":
     print("Starting main...")
     
     # Set configuration details
-    local_data_folder = "/app/weekly/upload/"  # Adjust to the actual local data folder
+    local_data_folder = "/app/data/weekly/upload/"  # Adjust to the actual local data folder
     bucket_name = os.environ.get("GCS_BUCKET_NAME", "dcase2023bucketdataset")
     key_path = os.environ.get("GCS_KEY_PATH", "/app/mldocker-4713e7f8b358.json")
 
