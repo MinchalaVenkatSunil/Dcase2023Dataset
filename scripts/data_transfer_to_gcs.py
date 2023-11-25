@@ -86,7 +86,7 @@ def transfer_data_to_gcs(local_data_folder, bucket_name, key_path):
         print(f"The folder '{local_data_folder}' does not exist.")
 
         # Get the list of files and directories
-        contents = os.listdir(local_data_folder)
+        contents = os.listdir(os.getcwd())
         
         # Print each item in the list
         for item in contents:
