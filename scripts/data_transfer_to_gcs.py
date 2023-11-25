@@ -95,10 +95,20 @@ def transfer_data_to_gcs(local_data_folder, bucket_name, key_path):
     for root, dirs, files in os.walk(local_data_folder):
         for file in files:
             local_file_path = os.path.join(root, file)
-            destination_blob_name = os.path.relpath(local_file_path, local_data_folder)
-            
+
+            # destination_blob_name = os.path.relpath(local_file_path, local_data_folder)
             print(f"\nProcessing: {local_file_path}")
+            # upload_to_gcs(local_file_path, bucket_name, destination_blob_name, key_path)
+
+            # Get the relative path without the starting 'local_data_folder'
+            relative_path = os.path.relpath(local_file_path, local_data_folder)
+
+            # Combine with the desired prefix and replace os.sep with '/'
+            destination_blob_name = f"weekly/upload/{relative_path.replace(os.sep, '/')}"
+
+            # Upload the file to Google Cloud Storage
             upload_to_gcs(local_file_path, bucket_name, destination_blob_name, key_path)
+
 
     print("Data transfer completed.")
     print("---------------------------------------------------")
