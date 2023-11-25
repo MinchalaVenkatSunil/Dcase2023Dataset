@@ -1,7 +1,5 @@
 # Stage 1: Download and store data
 FROM python:3.8-slim as download_and_store_stage
-# Dockerfile.data_collection_simulation
-FROM python:3.8-slim
 
 # Create a volume named "mydata"
 VOLUME /data
