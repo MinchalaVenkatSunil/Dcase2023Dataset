@@ -37,7 +37,7 @@ def main():
     print("=== Starting main ===")
 
     # Google Cloud Storage configuration
-    bucket_name = os.environ.get("GCS_BUCKET_NAME", "dcase2023dataset")
+    bucket_name = os.environ.get("GCS_BUCKET_NAME", "dcase2023bucketdataset")
     key_path = os.environ.get("GCS_KEY_PATH", "/app/mldocker-4713e7f8b358.json")
 
     # Source folder containing the data to be uploaded
