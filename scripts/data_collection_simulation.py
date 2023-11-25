@@ -85,4 +85,7 @@ def simulate_weekly_data_collection():
     print("Weekly data collection and download script completed.")
 
 if __name__ == "__main__":
+
+    destination_file_path = 'app/data/weekly/upload'
+    
     simulate_weekly_data_collection()
