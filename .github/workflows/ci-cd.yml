@@ -9,11 +9,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main
-      - feature
-      - staging
-      - release
-      - master
+
 
 jobs:
   build:
