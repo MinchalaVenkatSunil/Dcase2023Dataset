@@ -20,4 +20,4 @@ jobs:
       run: |
         docker build -t ${DOCKER_USERNAME}/Trigger:latest -f dockerfiles/TriggerDockerFile .
         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-        docker push ${DOCKER_USERNAME}/Trigger:latest
+        docker push ${DOCKER_USERNAME}/trigger:latest
