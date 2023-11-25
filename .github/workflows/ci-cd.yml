@@ -9,8 +9,8 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - dheeraj
-
+      - BranchFromMultistage
+      - main
 
 jobs:
   build:

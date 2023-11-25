@@ -4,12 +4,16 @@ from datetime import datetime
 
 def upload_data_to_gcs(bucket_name, source_folder, key_path):
     """Upload data to Google Cloud Storage."""
+    print("=== Starting upload_data_to_gcs ===")
+
     client = storage.Client.from_service_account_json(key_path)
     bucket = client.get_bucket(bucket_name)
 
     # Include year, month, and day in the folder structure
     current_date = datetime.now().strftime("%Y/%m/%d")
     destination_folder = f'data/{current_date}/weekly_upload/'
+
+    print(f"Does the folder exist: {source_folder}")
 
     # List all files in the source folder
     if os.path.exists(source_folder):
@@ -22,10 +26,15 @@ def upload_data_to_gcs(bucket_name, source_folder, key_path):
             blob = bucket.blob(destination_blob_name)
             blob.upload_from_filename(source_file_path)
             print(f"Uploaded {file_name} to Google Cloud Storage at {destination_blob_name}")
+
     else:
         print(f"The directory '{source_folder}' does not exist.")
 
+    print("=== Finished upload_data_to_gcs ===")
+
 def main():
+    print("=== Starting main ===")
+
     # Google Cloud Storage configuration
     bucket_name = os.environ.get("GCS_BUCKET_NAME", "dcase2023dataset")
     key_path = os.environ.get("GCS_KEY_PATH", "/app/newtestproject-405920-4be1a3498a32.json")
@@ -35,6 +44,8 @@ def main():
 
     # Upload data to Google Cloud Storage
     upload_data_to_gcs(bucket_name, source_folder, key_path)
+
+    print("=== Finished main ===")
 
 if __name__ == "__main__":
     main()
