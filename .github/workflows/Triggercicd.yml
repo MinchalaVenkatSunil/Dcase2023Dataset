@@ -18,6 +18,6 @@ jobs:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
-        docker build -t ${DOCKER_USERNAME}/Trigger:latest -f dockerfiles/TriggerDockerFile .
+        docker build -t ${DOCKER_USERNAME}/trigger:latest -f dockerfiles/TriggerDockerFile .
         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         docker push ${DOCKER_USERNAME}/trigger:latest
