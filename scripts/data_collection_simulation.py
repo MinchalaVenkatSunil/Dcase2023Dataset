@@ -91,13 +91,12 @@ def simulate_weekly_data_collection(dataset_path, output_path):
 
 if __name__ == "__main__":
     # Set the paths for the dataset and output directory
-    dataset_path = "/inputs/dev_data"
+    dataset_path = "/data/inputs/dev_data"
     output_path = "/app/inputs/result"
 
     # dataset_path = "C:\Users\harit\Documents\Visual Studio 2022\MLDockerTest\Dcase2023Dataset\inputs\dev_data"
     # output_path = "C:\Users\harit\Documents\Visual Studio 2022\MLDockerTest\Dcase2023Dataset\inputs\result"
 
-    simulate_weekly_data_collection(dataset_path, output_path)
     # dataset_path = "C:\Users\harit\Documents\Visual Studio 2022\MLDockerTest\Dcase2023Dataset\inputs\dev_data"
     # output_path = "C:\Users\harit\Documents\Visual Studio 2022\MLDockerTest\Dcase2023Dataset\inputs\result"
 
