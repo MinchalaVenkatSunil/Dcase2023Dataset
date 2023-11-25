@@ -18,4 +18,4 @@ COPY scripts/Trigger.py .
 ENV GOOGLE_APPLICATION_CREDENTIALS=/app/newtestproject-405920-4be1a3498a32.json
 
 # Run the application
-CMD ["python", "main.py"]
+CMD ["python", "Trigger.py"]
