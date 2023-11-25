@@ -69,7 +69,7 @@ def simulate_weekly_data_collection():
 
     # Include year, month, and day in the folder structure
     current_date = datetime.now().strftime("%Y/%m/%d")
-    destination_folder = f'/app/weekly/upload/{current_date}/'
+    destination_folder = f'/data/weekly/upload/{current_date}/'
     os.makedirs(destination_folder, exist_ok=True)
 
     # List of machinery types
