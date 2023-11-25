@@ -13,15 +13,15 @@ COPY inputs/bearing_attributes_00.csv .
 WORKDIR /app
 
 COPY requirements.txt .
-COPY mldocker-4713e7f8b358.json .
+COPY newtestproject-405920-4be1a3498a32.json .
 
 RUN pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt
-
-COPY scripts/data_collection_simulation.py .
 
 # Expose port 8080
 EXPOSE 8080
 
 WORKDIR /data
+
+COPY scripts/data_collection_simulation.py .
 
 ENTRYPOINT ["python", "data_collection_simulation.py"]
