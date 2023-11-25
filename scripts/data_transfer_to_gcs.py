@@ -6,6 +6,8 @@ def upload_data_to_gcs(bucket_name, source_folder, key_path):
     """Upload data to Google Cloud Storage."""
     print("=== Starting upload_data_to_gcs ===")
 
+    print(f"Current working directory: {os.getcwd()}")
+    
     client = storage.Client.from_service_account_json(key_path)
     bucket = client.get_bucket(bucket_name)
 
@@ -41,7 +43,7 @@ def main():
     key_path = os.environ.get("GCS_KEY_PATH", "/app/mldocker-4713e7f8b358.json")
 
     # Source folder containing the data to be uploaded
-    source_folder = 'app/data/weekly/upload'
+    source_folder = 'data/weekly/upload'
 
     # Upload data to Google Cloud Storage
     upload_data_to_gcs(bucket_name, source_folder, key_path)
