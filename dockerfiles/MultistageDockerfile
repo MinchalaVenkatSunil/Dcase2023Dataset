@@ -11,7 +11,7 @@ COPY mldocker-4713e7f8b358.json .
 RUN python data_collection_simulation.py
 
 # Stage 2: Upload data to Google Cloud Storage
-FROM python:3.8-slim
+FROM python:3.8-slim as upload_to_gcs_stage
 
 WORKDIR /app
 
