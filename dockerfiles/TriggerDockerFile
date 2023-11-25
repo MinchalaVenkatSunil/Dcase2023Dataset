@@ -12,7 +12,7 @@ COPY newtestproject-405920-4be1a3498a32.json .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code into the container
-COPY main.py .
+COPY scripts/Trigger.py .
 
 # Set the environment variable for Google Cloud Storage credentials
 ENV GOOGLE_APPLICATION_CREDENTIALS=/app/newtestproject-405920-4be1a3498a32.json
