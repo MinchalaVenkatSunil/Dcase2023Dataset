@@ -3,14 +3,17 @@ FROM python:3.8-slim
 
 # Create a volume named "mydata"
 VOLUME /data
+COPY inputs/dev_data/. . 
 
 # Set the working directory inside the container
-WORKDIR /data
+# WORKDIR /data
 
-COPY inputs/fan_attributes_00.csv .
-COPY inputs/bearing_attributes_00.csv .
+#COPY inputs/fan_attributes_00.csv .
+#COPY inputs/bearing_attributes_00.csv .
 
 WORKDIR /app
+COPY scripts/. . 
+COPY dockerfiles/. . 
 
 COPY requirements.txt .
 COPY mldocker-4713e7f8b358.json .
@@ -20,8 +23,8 @@ RUN pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.tx
 # Expose port 8080
 EXPOSE 8080
 
-WORKDIR /data
+# WORKDIR /data
 
-COPY scripts/data_collection_simulation.py .
+# COPY scripts/data_collection_simulation.py .
 
 ENTRYPOINT ["python", "data_collection_simulation.py"]

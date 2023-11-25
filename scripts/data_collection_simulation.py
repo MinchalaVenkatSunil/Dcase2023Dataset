@@ -1,91 +1,56 @@
 import os
-from google.cloud import storage
-import pandas as pd
-from datetime import datetime
+import shutil
+import random
+from datetime import datetime, timedelta
 
-# def simulate_weekly_data_collection_other_solution():
-#     """
-#     Simulates weekly data collection and uploads CSV files to Google Cloud Storage.
-#     """
-#     # File paths for CSV files
-#     csv_file_path_fan = "/app/fan_attributes_00.csv"
-#     csv_file_path_bearing = "/app/bearing_attributes_00.csv"
+def simulate_weekly_data_collection(dataset_path, output_path):
+    print("=== Starting Weekly Data Collection Simulation ===")
 
-#     # Google Cloud Storage configuration
-#     bucket_name = "dcase2023bucketdataset"
+    # Ensure the output directory exists
+    os.makedirs(output_path, exist_ok=True)
+
+    # List all machine types in the dataset
+    machine_types = [dir_name for dir_name in os.listdir(dataset_path) if os.path.isdir(os.path.join(dataset_path, dir_name))]
     
-#     # Include year, month, and day in the folder structure
-#     current_date = datetime.now().strftime("%Y/%m/%d")
-#     destination_blob_name_fan = f"data/{current_date}/fan_attributes_00.csv"
-#     destination_blob_name_bearing = f"data/{current_date}/bearing_attributes_00.csv"
-    
-#     key_path = "/app/mldocker-4713e7f8b358.json"
+    print(f"Machine Types: {machine_types}")
 
-#     # Initialize Google Cloud Storage client
-#     client = storage.Client.from_service_account_json(key_path)
-#     bucket = client.get_bucket(bucket_name)
+    # Simulate weekly data collection for each machine type
+    for machine_type in machine_types:
+        machine_type_path = os.path.join(dataset_path, machine_type)
 
-#     # Upload CSV files to Google Cloud Storage
-#     blob_fan = bucket.blob(destination_blob_name_fan)
-#     blob_fan.upload_from_filename(csv_file_path_fan)
+        # List all sections for the machine type
+        sections = [dir_name for dir_name in os.listdir(machine_type_path) if os.path.isdir(os.path.join(machine_type_path, dir_name))]
 
-#     blob_bearing = bucket.blob(destination_blob_name_bearing)
-#     blob_bearing.upload_from_filename(csv_file_path_bearing)
+        print(f"Processing Machine Type: {machine_type}")
 
-#     """
-#     Simulates weekly data collection and uploads CSV files to local OS.
-#     """
-#     # Local file processing with pandas
-#     fan_data = pd.read_csv(csv_file_path_fan)
-#     bearing_data = pd.read_csv(csv_file_path_bearing)
+        for section in sections:
+            section_path = os.path.join(machine_type_path, section)
 
-#     # Output path for saving processed data locally
-#     output_path = f'/app/weekly/upload/{current_date}/'
-#     os.makedirs(output_path, exist_ok=True)
+            # List all files in the section
+            files = [file_name for file_name in os.listdir(section_path) if file_name.endswith('.wav')]
 
-#     # Save the processed data locally for weekly upload
-#     fan_data.to_csv(os.path.join(output_path, 'fan_data.csv'), index=False)
-#     bearing_data.to_csv(os.path.join(output_path, 'bearing_data.csv'), index=False)
+            print(f"Processing Section: {section}")
 
-def download_data_from_gcs(bucket_name, source_blob_name, destination_file_path, key_path):
-    """Download a file from Google Cloud Storage."""
-    client = storage.Client.from_service_account_json(key_path)
-    bucket = client.get_bucket(bucket_name)
-    blob = bucket.blob(source_blob_name)
-    blob.download_to_filename(destination_file_path)
+            # Simulate weekly data collection by randomly selecting a subset of files
+            random.shuffle(files)
+            weekly_subset = files[:10]  # Adjust the number based on your simulation requirements
 
-def simulate_weekly_data_collection():
-    """
-    Assuming the source data will be available weekly under the secured GCP bucket "dcase2023bucketdataset".
-    Or we can also assume and work with any server
-    Simulates weekly data collection and downloads CSV files from Google Cloud Storage.
-    """
+            # Copy the selected files to the output directory
+            for file_name in weekly_subset:
+                source_path = os.path.join(section_path, file_name)
+                destination_path = os.path.join(output_path, f'{machine_type}_{section}_{file_name}')
 
-    print("Starting the weekly data collection and download script...")
+                print(f"Copying: {source_path} to {destination_path}")
+                shutil.copyfile(source_path, destination_path)
 
-    # Google Cloud Storage configuration
-    bucket_name = os.environ.get("GCS_BUCKET_NAME", "dcase2023bucketdataset")
-    key_path = os.environ.get("GCS_KEY_PATH", "/app/mldocker-4713e7f8b358.json")
-
-    # Include year, month, and day in the folder structure
-    current_date = datetime.now().strftime("%Y/%m/%d")
-    destination_folder = f'/data/weekly/upload/{current_date}/'
-    os.makedirs(destination_folder, exist_ok=True)
-
-    # List of machinery types
-    machinery_types = ["fan", "bearing", "gearbox", "slider", "ToyCar", "ToyTrain", "valve"]
-
-    # Download CSV files for each machinery type
-    for machinery_type in machinery_types:
-        source_blob_name = f"DcaseDevDataSet/{machinery_type}/attributes_00.csv"
-        destination_file_path = os.path.join(destination_folder, f'{machinery_type}_attributes_00.csv')
-        download_data_from_gcs(bucket_name, source_blob_name, destination_file_path, key_path)
-        print(f"Downloaded {machinery_type} data from Google Cloud Storage to {destination_file_path}")
-
-    print("Weekly data collection and download script completed.")
+    print("=== Weekly Data Collection Simulation Completed ===")
 
 if __name__ == "__main__":
+    # Set the paths for the dataset and output directory
+    dataset_path = "/inputs/dev_data"
+    output_path = "/app/inputs/result"
 
-    destination_file_path = 'app/data/weekly/upload'
-    
-    simulate_weekly_data_collection()
+    # dataset_path = "C:\Users\harit\Documents\Visual Studio 2022\MLDockerTest\Dcase2023Dataset\inputs\dev_data"
+    # output_path = "C:\Users\harit\Documents\Visual Studio 2022\MLDockerTest\Dcase2023Dataset\inputs\result"
+
+    simulate_weekly_data_collection(dataset_path, output_path)
