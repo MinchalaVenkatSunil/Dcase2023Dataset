@@ -66,7 +66,7 @@ def simulate_weekly_data_collection(dataset_path, output_path, weekly_subset_cou
 if __name__ == "__main__":
     # Set the paths for the dataset and output directory
     dataset_path = "/data/inputs/dev_data"
-    output_path = "/app/result"
+    output_path = "/data/result"
     weekly_subset_count = 2
 
     # dataset_path = "C:/Users/harit/Documents/Visual Studio 2022/MLDockerTest/Dcase2023Dataset/inputs/dev_data"
