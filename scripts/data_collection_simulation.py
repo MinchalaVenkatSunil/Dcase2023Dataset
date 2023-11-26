@@ -1,8 +1,9 @@
+import os
 import shutil
 import random
 from datetime import datetime, timedelta
 
-def simulate_weekly_data_collection(dataset_path, output_path):
+def simulate_weekly_data_collection(dataset_path, output_path, weekly_subset_count):
     print("=== Starting Weekly Data Collection Simulation ===")
 
     # Ensure the output directory exists
@@ -32,7 +33,7 @@ def simulate_weekly_data_collection(dataset_path, output_path):
 
             # Simulate weekly data collection by randomly selecting a subset of files
             random.shuffle(files)
-            weekly_subset = files[:2] 
+            weekly_subset = files[:{weekly_subset_count}] 
 
             # Copy the selected files to the output directory
             for file_name in weekly_subset:
@@ -50,6 +51,7 @@ if __name__ == "__main__":
     # Set the paths for the dataset and output directory
     dataset_path = "/data/inputs/dev_data"
     output_path = "/app/result"
+    weekly_subset_count = 2
 
     # dataset_path = "C:\Users\harit\Documents\Visual Studio 2022\MLDockerTest\Dcase2023Dataset\inputs\dev_data"
     # output_path = "C:\Users\harit\Documents\Visual Studio 2022\MLDockerTest\Dcase2023Dataset\inputs\result"
@@ -57,4 +59,4 @@ if __name__ == "__main__":
     # dataset_path = "C:\Users\harit\Documents\Visual Studio 2022\MLDockerTest\Dcase2023Dataset\inputs\dev_data"
     # output_path = "C:\Users\harit\Documents\Visual Studio 2022\MLDockerTest\Dcase2023Dataset\inputs\result"
 
-    simulate_weekly_data_collection(dataset_path, output_path)
+    simulate_weekly_data_collection(dataset_path, output_path, weekly_subset_count)
