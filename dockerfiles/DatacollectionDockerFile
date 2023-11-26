@@ -1,9 +1,10 @@
 # Dockerfile.data_collection_simulation
 FROM python:3.8-slim
 
+WORKDIR /app
 # Create a volume named "mydata"
-VOLUME /data
-WORKDIR /data
+VOLUME /app/data
+WORKDIR /app/data
 COPY inputs/dev_data/. inputs/dev_data/. 
 
 # Set the working directory inside the container

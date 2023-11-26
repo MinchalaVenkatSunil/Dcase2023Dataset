@@ -1,96 +1,86 @@
+# data_collection.py
+
+from google.cloud import storage
 import os
 import shutil
 import random
 from datetime import datetime, timedelta
 
-from google.cloud import storage  # Install this library using: pip install google-cloud-storage
+def download_file(bucket_name, source_blob_name, destination_file_name):
+    """Downloads a file from Google Cloud Storage."""
+    # json_key_path = "C:/Users/harit/Documents/Visual Studio 2022/MLDockerTest/Dcase2023Dataset/mldocker-4713e7f8b358.json"
+    json_key_path = "/app/mldocker-4713e7f8b358.json"
+    storage_client = storage.Client.from_service_account_json(json_key_path)
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(source_blob_name)
+    blob.download_to_filename(destination_file_name)
 
-def simulate_weekly_data_collection(output_path, weekly_subset_count):
-    print("=== Starting Weekly Data Collection Simulation ===")
+def list_files(bucket_name, prefix):
+    """Lists all files in a GCS bucket with the given prefix."""
+    json_key_path = "/app/mldocker-4713e7f8b358.json"
+    storage_client = storage.Client.from_service_account_json(json_key_path)
+    blobs = storage_client.list_blobs(bucket_name, prefix=prefix)
+    file_names = [blob.name for blob in blobs]
+    # print(f"File names in {prefix}: {file_names}")
+    return file_names
+
+def simulate_weekly_data_collection(bucket_name, dataset_folder, output_path):
+    print("Starting weekly data collection simulation...")
 
     # Ensure the output directory exists
     os.makedirs(output_path, exist_ok=True)
 
-    # Read the dataset path from the environment variable
-    dataset_path = os.environ.get('DATASET_PATH')
-    if not dataset_path:
-        raise ValueError("DATASET_PATH environment variable not set.")
-
-    # Read the dataset path from the environment variable
-    gcp_key_path = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
-    if not gcp_key_path:
-        raise ValueError("GOOGLE_APPLICATION_CREDENTIALS environment variable not set.")
-    
-    print("DATASET_PATH:", os.environ.get('DATASET_PATH'))
-    print("GOOGLE_APPLICATION_CREDENTIALS:", os.environ.get('GOOGLE_APPLICATION_CREDENTIALS'))
-
-    # Initialize Google Cloud Storage client
-    storage_client = storage.Client.from_service_account_json(gcp_key_path)
-    bucket_name = "dcase2023bucketdataset"
-    bucket = storage_client.get_bucket(bucket_name)
-    print(f"bucket: {bucket} and storage client: {storage_client}")
-
     # List all machine types in the dataset
-    machine_types = [dir_name for dir_name in storage_client.list_blobs(dataset_path, prefix='') if '/' in dir_name.name]
-    
-    print(f"Machine Types: {machine_types}")
+    machine_types = list_files(bucket_name, f"{dataset_folder}/")
+    machine_types = list(set(machine_types))
+
+    print(f"machine types: {(machine_types.count)}")
+    machine_types = [machine_type.split('/')[1] for machine_type in machine_types if '/' in machine_type]
+    machine_types = list(set(machine_types))
+
+    print(f"machine types with split: {machine_types}")
 
     # Simulate weekly data collection for each machine type
-    for machine_type_blob in machine_types:
-        machine_type_path = machine_type_blob.name
+    for machine_type in machine_types:
+        machine_type_prefix = f"{dataset_folder}/{machine_type}"
+
+        print(f"machine type prefix: {machine_type_prefix}")
 
         # List all sections for the machine type
-        sections = [dir_name for dir_name in storage_client.list_blobs(machine_type_path, prefix=machine_type_path) if '/' in dir_name.name]
+        sections = list_files(bucket_name, f"{machine_type_prefix}/")
+        sections = list(set(sections))
+        sections = [section.split('/')[2] for section in sections if '/' in section]
+        sections = list(set(sections))
 
-        print(f"Processing Machine Type: {machine_type_path}")
+        for section in sections:
+            section_prefix = f"{machine_type_prefix}/{section}"
 
-        for section_blob in sections:
-            section_path = section_blob.name
-
-            # List all files in the 'train' subdirectory
-            train_path = os.path.join(section_path, 'train')
-            train_files = [blob.name for blob in storage_client.list_blobs(train_path, prefix=train_path)]
-
-            print("Train Path:", train_path)
-            print("Train Files:", train_files)
-
-            # List all files in the 'test' subdirectory
-            test_path = os.path.join(section_path, 'test')
-            test_files = [blob.name for blob in storage_client.list_blobs(test_path, prefix=test_path)]
-
-            print("Test Path:", test_path)
-            print("Test Files:", test_files)
-
-            # Combine 'train' and 'test' files for processing
-            files = train_files + test_files
-
-            print(f"Processing Section: {section_path}")
-            print(f"Processing files count: {len(files)}")
+            # List all files in the section
+            files = list_files(bucket_name, f"{section_prefix}/")
+            files = list(set(files))
+            files = [file.split('/')[-1] for file in files if '/' in file and file.endswith('.wav')]
+            files = list(set(files))
 
             # Simulate weekly data collection by randomly selecting a subset of files
             random.shuffle(files)
-            weekly_subset = files[:weekly_subset_count] 
-            print(f"Weekly Subset: {weekly_subset}")
+            weekly_subset = files[:2]  # Adjust the number based on your simulation requirements
 
-            # Copy the selected files to the output directory
+            # Download and copy the selected files to the output directory
             for file_name in weekly_subset:
-                print(f"Copying: {file_name}")
+                source_blob_name = f"{section_prefix}/{file_name}"
+                destination_path = os.path.join(output_path, f'{machine_type}_{section}_{file_name}')
 
-                source_path = os.path.join(section_path, 'train' if file_name in train_files else 'test', file_name)
-                destination_path = os.path.join(output_path, f'{machine_type_path}_{section_path}_{file_name}')
+                # print(f"Downloading file: {source_blob_name} -> {destination_path}")
+                download_file(bucket_name, source_blob_name, destination_path)
 
-                print(f"Copying: {source_path} to {destination_path}")
-                shutil.copyfile(source_path, destination_path)
-
-    print("=== Weekly Data Collection Simulation Completed ===")
+    print("Weekly data collection simulation completed.")
 
 if __name__ == "__main__":
-    # Set the output directory
-    output_path = "/app/result/weekly"
-    weekly_subset_count = 2
+    # Set the GCS bucket name and dataset folder
+    gcs_bucket_name = "dcase2023bucketdataset"
+    gcs_dataset_folder = "DcaseDevDataSet"
 
-    # Read the Google Cloud Storage dataset path and credentials file path from environment variables
-    os.environ['DATASET_PATH'] = "dcase2023bucketdataset/DcaseDevDataSet"
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "/app/mldocker-4713e7f8b358.json"
+    # Set the local output directory
+    output_path = "/app/data/result/weekly/data_collection"
 
-    simulate_weekly_data_collection(output_path, weekly_subset_count)
+    simulate_weekly_data_collection(gcs_bucket_name, gcs_dataset_folder, output_path)
