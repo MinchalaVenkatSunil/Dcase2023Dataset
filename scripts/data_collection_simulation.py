@@ -95,6 +95,6 @@ if __name__ == "__main__":
     # TODO: Create environment or config for these data
     gcs_bucket_name = "dcase2023bucketdataset"
     gcs_dataset_folder = "DcaseDevDataSet"
-    output_path = "app/result/weekly/data_collection"
+    output_path = "result/weekly/data_collection"
 
     simulate_weekly_data_collection(gcs_bucket_name, gcs_dataset_folder, output_path)
