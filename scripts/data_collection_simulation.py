@@ -78,6 +78,6 @@ if __name__ == "__main__":
     gcs_dataset_folder = "DcaseDevDataSet"
 
     # Set the local output directory
-    output_path = "/app/data/result/weekly/data_collection"
+    output_path = "/app/result/weekly/data_collection"
 
     simulate_weekly_data_collection(gcs_bucket_name, gcs_dataset_folder, output_path)
