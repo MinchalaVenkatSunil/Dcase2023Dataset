@@ -33,7 +33,7 @@ def simulate_weekly_data_collection(dataset_path, output_path, weekly_subset_cou
 
             # Simulate weekly data collection by randomly selecting a subset of files
             random.shuffle(files)
-            weekly_subset = files[:{weekly_subset_count}] 
+            weekly_subset = files[:weekly_subset_count] 
 
             # Copy the selected files to the output directory
             for file_name in weekly_subset:
