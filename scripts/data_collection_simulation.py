@@ -1,8 +1,5 @@
-# data_collection.py
-
 from google.cloud import storage
 import os
-import shutil
 import random
 from datetime import datetime, timedelta
 
