@@ -9,7 +9,23 @@ COPY requirements.txt .
 COPY newtestproject-405920-4be1a3498a32.json .
 
 # Install any dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Use an official Python runtime as a parent image
+FROM python:3.8
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app
+COPY . /app
+
+# Install required packages
+RUN pip install --no-cache-dir \
+    pandas \
+    google-cloud-storage
+
+# Run watch_bucket.py when the container launches
+CMD ["python", "watch_bucket.py"]
+
 
 # Copy the application code into the container
 COPY scripts/Trigger.py .
