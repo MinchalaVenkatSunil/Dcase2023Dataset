@@ -19,6 +19,6 @@ def watch_bucket(bucket_name):
 
 if __name__ == "__main__":
     # Set your GCS bucket name here
-    bucket_name = "your-gcs-bucket-name"
+    bucket_name = "dcase2023dataset"
 
     watch_bucket(bucket_name)
