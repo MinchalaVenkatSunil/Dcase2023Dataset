@@ -34,7 +34,7 @@ jobs:
         with:
           push: true
           context: .
-          file: ./DatacollectionDockerFile
+          file: DatacollectionDockerFile
           tags: ml-data-collection-service:${{ github.run_number }}
           labels: |
             description=Simulates weekly sensor data collection and uploads to Google Cloud.
