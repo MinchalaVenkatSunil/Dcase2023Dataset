@@ -73,4 +73,4 @@ jobs:
           BUILD_NUMBER=$GITHUB_RUN_NUMBER
           VERSION_TAG="$VERSION-$BUILD_NUMBER"
 
-          docker run -d --name ml-data-collection ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION_TAG} || true
+          docker run -d -p 8080:8080 --name ml-data-collection ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION_TAG} || true
