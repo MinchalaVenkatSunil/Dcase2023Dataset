@@ -33,8 +33,8 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          context: .
-          file: DatacollectionDockerFile
+          context: ./dockerfiles/
+          file: ./dockerfiles/DatacollectionDockerFile
           tags: ml-data-collection-service:${{ github.run_number }}
           labels: |
             description=Simulates weekly sensor data collection and uploads to Google Cloud.
