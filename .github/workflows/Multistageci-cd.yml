@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - BranchFromMultistage
+      - main_codebase
+      - master
+      - release
 
 jobs:
   build_and_push_docker:

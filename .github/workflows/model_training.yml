@@ -26,11 +26,11 @@ jobs:
 
     - name: Deploy to AI Platform
       run: |
-        gcloud ai-platform models create "my-model" --region "us-central1"
-        gcloud ai-platform versions create "v1" --model "my-model" --region "us-central1" --origin "gcr.io/${{ secrets.GCP_PROJECT_ID }}/your-docker-image1"
+        gcloud ai-platform models create "mi-model-training" --region "eu-central1"
+        gcloud ai-platform versions create "v1" --model "mi-model-training" --region "eu-central1" --origin "gcr.io/${{ secrets.GCP_PROJECT_ID }}/ModelTrainingDockerFile"
 
     - name: Trigger Cloud Build for model training
       run: |
         gcloud builds submit \
           --config=path/to/your/cloudbuild.yaml \
-          --substitutions=_MODEL_NAME=my-model,_ANY_OTHER_VARIABLE=any-value
+          --substitutions=_MODEL_NAME=mi-model-training,_MODEL_TYPE=bearing

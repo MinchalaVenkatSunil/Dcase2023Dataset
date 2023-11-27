@@ -10,9 +10,9 @@ on:
   push:
     branches:
       # - BranchFromMultistage
-      - main_codebase
-      - master
-      - release
+      # - main_codebase
+      # - master
+      # - release
 
 jobs:
   build:
