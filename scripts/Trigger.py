@@ -1,14 +1,24 @@
 import os
-from google.cloud import storage
+import subprocess
+import time
 
-def process_file(data, context):
-    """Triggered by a change to a Cloud Storage bucket."""
-    bucket_name = data['bucket']
-    file_name = data['name']
+def watch_bucket(bucket_name):
+    while True:
+        # Use gsutil ls to list objects in the bucket
+        result = subprocess.run(['gsutil', 'ls', 'gs://' + bucket_name], stdout=subprocess.PIPE)
 
-    print(f"Processing file: {file_name} in bucket: {bucket_name}")
+        # Process the result (you can customize this based on your requirements)
+        if result.returncode == 0:
+            print("Bucket contents:")
+            print(result.stdout.decode())
+        else:
+            print("Error while listing bucket contents.")
 
-    # Your logic to process the file goes here
+        # Sleep for a specified interval (e.g., 1 hour)
+        time.sleep(3600)
 
-if __name__ == '__main__':
-    process_file({'bucket': 'dcase2023dataset', 'name': 'data1'}, None)
+if __name__ == "__main__":
+    # Set your GCS bucket name here
+    bucket_name = "your-gcs-bucket-name"
+
+    watch_bucket(bucket_name)
