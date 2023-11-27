@@ -32,7 +32,8 @@ jobs:
       - name: Build and push
         run: |
           VERSION=1.0.1
-          #VERSION_TAG="$VERSION-$(git rev-parse HEAD)"
+          BUILD_NUMBER=$GITHUB_RUN_NUMBER
+          VERSION_TAG="$VERSION-$BUILD_NUMBER"
 
           # Only build and push Docker image for pushes to the main branch
           docker build -t ml-data-collection-service:${VERSION_TAG} \
