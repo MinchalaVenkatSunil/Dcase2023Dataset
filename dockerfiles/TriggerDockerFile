@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Copy the requirements file into the container
 COPY requirements.txt .
-COPY newtestproject-405920-4be1a3498a32.json .
+COPY newtestproject-405920-420e4e59d161.json .
 
 # Install required dependencies
 RUN apt-get update && apt-get install -y curl gnupg
