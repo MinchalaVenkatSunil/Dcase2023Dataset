@@ -9,7 +9,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      # - BranchFromMultistage
+      - BranchFromMultistage
       # - main_codebase
       # - master
       # - release
