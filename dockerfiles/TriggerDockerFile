@@ -21,7 +21,7 @@ RUN echo "deb http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc
 COPY scripts/Trigger.py .
 
 # Set the environment variable for Google Cloud Storage credentials
-ENV GOOGLE_APPLICATION_CREDENTIALS=/app/newtestproject-405920-4be1a3498a32.json
+ENV GOOGLE_APPLICATION_CREDENTIALS=/app/newtestproject-405920-420e4e59d161.json
 
 # Run the application
 CMD ["python", "Trigger.py"]
