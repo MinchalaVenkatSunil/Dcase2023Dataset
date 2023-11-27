@@ -63,5 +63,9 @@ jobs:
 
       - name: Run Docker container
         run: |
-          docker run ml-data-collection-service:${{ github.run_number }}
+          VERSION=1.0.1
+          BUILD_NUMBER=$GITHUB_RUN_NUMBER
+          VERSION_TAG="$VERSION-$BUILD_NUMBER"
+
+          docker run ml-data-collection-service:${VERSION_TAG}
         
