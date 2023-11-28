@@ -95,9 +95,7 @@ jobs:
           BUILD_NUMBER=$GITHUB_RUN_NUMBER
           VERSION_TAG="$VERSION-$BUILD_NUMBER"
   
-          docker run -d --name ml-data-collection \
-            -v ml-data-collection-data:/app/result \
-            ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION_TAG} || true
+          docker run -v ml-data-collection-data:/app/result ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION_TAG} || true
           
   data_transfer:
     runs-on: ubuntu-latest
@@ -123,8 +121,6 @@ jobs:
           BUILD_NUMBER=$GITHUB_RUN_NUMBER
           VERSION_TAG="$VERSION-$BUILD_NUMBER"
 
-          docker run -d --name ml-data-transfer \
-            -v ml-data-collection-data:/app/result \
-            ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service:${VERSION_TAG} || true
+          docker run -v ml-data-collection-data:/app/result ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service:${VERSION_TAG} || true
             
           
