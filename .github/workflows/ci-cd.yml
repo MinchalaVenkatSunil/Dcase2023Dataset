@@ -16,8 +16,8 @@ on:
       - main
       - master
       - overall_requirement_basecode
-      - data_collection_transfer_updates
       - data_coll_trans_trails
+      
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -122,5 +122,6 @@ jobs:
           VERSION_TAG="$VERSION-$BUILD_NUMBER"
 
           docker run -v ml-data-collection-data:/app/result ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service:${VERSION_TAG} || true
+
             
           
