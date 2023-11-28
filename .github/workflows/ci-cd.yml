@@ -16,7 +16,7 @@ on:
       - main
       - master
       - overall_requirement_basecode
-      - data_coll_trans_trails
+      - data_collection_transfer
       
 jobs:
   build:
