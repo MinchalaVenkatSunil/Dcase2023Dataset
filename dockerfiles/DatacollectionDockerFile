@@ -4,8 +4,8 @@ FROM python:3.8-slim
 # Set the working directory inside the container
 WORKDIR /app
 
-# Create a volume named "mydata"
-VOLUME /app/data
+# Creating a volume named "mydata"
+VOLUME /app/result
 
 # Copy the necessary files
 COPY scripts/ /app/scripts/
@@ -15,9 +15,6 @@ COPY mldocker-4713e7f8b358.json .
 
 # Install dependencies
 RUN pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt
-
-# Expose port 8080 (optional if not needed)
-EXPOSE 8080
 
 # Set the entry point for the container
 ENTRYPOINT ["python", "scripts/data_collection_simulation.py"]
