@@ -122,5 +122,6 @@ jobs:
           VERSION_TAG="$VERSION-$BUILD_NUMBER"
 
           docker run -v ml-data-collection-data:/app/result ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service:${VERSION_TAG} || true
+          
             
           
