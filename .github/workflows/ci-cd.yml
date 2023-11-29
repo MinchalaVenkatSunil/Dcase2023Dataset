@@ -27,8 +27,8 @@ jobs:
 
     env:
       # GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+      GOOGLE_APPLICATION_CREDENTIALS: test value
       TEST_VALUE: test value
-      # GOOGLE_APPLICATION_CREDENTIALS: "{auth_provider_x509_cert_url:https://www.googleapis.com/oauth2/v1/certs,auth_uri:https://accounts.google.com/o/oauth2/auth,client_email:mldockerserviceaccount@mldocker.iam.gserviceaccount.com,client_id:104541446813669288473,client_x509_cert_url:https://www.googleapis.com/robot/v1/metadata/x509/mldockerserviceaccount%40mldocker.iam.gserviceaccount.com,private_key:-----BEGIN PRIVATE KEY-----nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDjXt8cRIsbJQ3Wnr26DCl2Tq/NTpo08IL/VKjJH0MU2nm/6sZLU5Iv+f6vG1M9/UIKq++E85qKAhY4Kn4pLHwB4hgRIsFhcbroylAp7SR8J73K7QaFnwochgWIxjkuuJETX5zvWqHcOrJ0xAny9UCcrR0Qv6H3cPQCxRN2DhoHl7S2vQVqVWn7J0KUheG15mS4nA/IkJvCAdwk2EMnvulJ/YszpVUHlwFyLv55Vu4MwXjpr/dDoWfYfWqwcT/aLj40HTEz8PilKpRbnXSBnIr7ias0rtIRD1vQ2h6GQUw5bAoJgqQOhj7QpHAy4GXcBwx44u+iWgQYxajgqQ8eqnjG89s4oNAgMBAAECggEACN2sroH/uJ2/xeTOVt7DGlyEnvjqHfOa91lvX3yFDCWuncSSWeKW2zcQ1swmeU7UUe01aEZFeucs7aDJAjfhwVFcfmcd8vDAYvOB2x/VTYJgQn2wCOrULpuNQLGWDjvVMF+0k2LB2AAT8FiqtIEZHedoAcQ7kChyy/bG+nd2vjv64GnLz8kLBcMqzS8GbgtBTeELzlVpGmzonK7IJpzeCI9CQNc6FjrsaUBGnwkYykfeyOkn0CscgukKfn3fOcb67CgRm9vposjkYKV1RbPqEA+Bj/S1F/sB1BDUgzfit21sMvzrnMLh09Lrqze4ZilcVAcv6TxZk36PK9a3pA8gm8hw+oQKBgQD3c+dQVgYl3cNOt3Uznm+9N3gbcIdBs+EhEiFshEIHsOzkLRzGG+7YgptDaNz+rByEjU4q2xN+pW5EZvoDWn8O/yRzgNrTKWbThxmdBR/kdR57iorUq7QGPMecUUzxE/63QSM5/zUpxTz6FXR4lIn6MBsPeMpiZhB/XM43DouBkLSfQKBgQDrOWRQbcbvKM+RUS9VpY2QzKTnmqtAfys/ncfMTpg2PhKEwYsyOMOFGdRW+JzMaCuqYDSWzOm3hb0kPwP9T0IatLPuvi2ACL1M8n/VeOzaRlVK+rO/p8RcOa+yqoH0maK8QTrPuObjpycxKMX9rU36+99HhmZO+akRqenXTSuFOka0QKBgQCJCbECdoF1Gvj8cPEBIcxHLTxTUI6iqmUrPvBowUGSV8Hhkw3EnmUVlk7x5/LrPtmUNsUhSq3jJy6HxxeSIJGpdnD9Yo6AuWlI1517M6asJmvBSyZVnnWeNq68zPF1WQNo7TPa/JCuj0KTpKoZ1PuUZHK4bQDBk8AmZ7CMtXjbQX6QKBgDYTnGYaL1gHA5gbIHROZXXP+N6KuodPP6EdLkM/hipiFqvCOpevCPOePnxH5vPutqsSNnsS8EraH3jVo7yfagp3VENA/lAItACeipbOl9SN+qmj/JKApNl2wXdXT0zFzO1uKXnD7Vsja8l2QvANXRef+4xN0SCy7pCxVXGo4epcvUhAoGBAIX6tyFowE8/PyapOXlAn57HGaLMChZlzh1WHeem8s5ZBK11k+2ahbpeLMHiBGT+v4G4vIa4l6ZuTMvu49vaJnXF1WWKlTwmPhAmi9KL91pV7+ED1TGCAC1jAMvUQTpNlflJ9g+EfJwJSj1VVMx0yFna1tKoJ7wD2A8ClygmeMRAXAVn-----END PRIVATE KEY-----n,private_key_id:4713e7f8b358921ffbc45a2176dd3e3a16f31e02,project_id:mldocker,token_uri:https://oauth2.googleapis.com/token,type:service_account,universe_domain:googleapis.com}"
       # GOOGLE_APPLICATION_CREDENTIALS_USERNAME: ${{ secrets.DOCKER_USERNAME  }}
 
 
@@ -104,14 +104,18 @@ jobs:
           password: ${{ secrets.DOCKER_TOKENS }}
 
       - name: Run Docker container for data collection
-        if: github.event.schedule == '50 11 * * *'
+        # if: github.event.schedule == '50 11 * * *'
         run: |
           VERSION=1.0.1
           BUILD_NUMBER=$GITHUB_RUN_NUMBER
           VERSION_TAG="$VERSION-$BUILD_NUMBER"
 
-          docker run -v ml-data-collection-data:/app/result \
-            -- env GOOGLE_APPLICATION_CREDENTIALS=$TEST_VALUE
+          docker run --env GOOGLE_1=test value 1 -v ml-data-collection-data:/app/result \
+            --env GOOGLE_APPLICATION_CREDENTIALS=$TEST_VALUE \
+            --env GOOGLE_2=$TEST_VALUE \
+            --env GOOGLE_3=test value 3 \
+            -e GOOGLE_4=test value 4 \
+            -e GOOGLE_5 \
             ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION_TAG} || true
 
   data_transfer:
@@ -133,12 +137,12 @@ jobs:
           password: ${{ secrets.DOCKER_TOKENS }}
 
       - name: Run Docker container for data transfer
-        if: github.event.schedule == '50 11 * * *'
+        # if: github.event.schedule == '50 11 * * *'
         run: |
           VERSION=1.0.1
           BUILD_NUMBER=$GITHUB_RUN_NUMBER
           VERSION_TAG="$VERSION-$BUILD_NUMBER"
 
           docker run -v ml-data-collection-data:/app/result \
-            -e GOOGLE_APPLICATION_CREDENTIALS=test transfer value \
+            --env GOOGLE_APPLICATION_CREDENTIALS=test transfer value \
             ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service:${VERSION_TAG} || true

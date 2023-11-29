@@ -21,9 +21,20 @@ def download_file(
     try:
         # json_key_path = "/app/mldocker-key-gcp.json"
         # json_key_path = "C:/Users/harit/Documents/Visual Studio 2022/MLDockerTest/ML_DCASE2023Task2DataSet/mldocker-key-gcp.json"
-        
+        # docker run --env GOOGLE_1=test value 1 -v ml-data-collection-data:/app/result \
+        #     --env GOOGLE_APPLICATION_CREDENTIALS=$TEST_VALUE \
+        #     --env GOOGLE_2=$TEST_VALUE \
+        #     --env GOOGLE_3=test value 3 \
+        #     -e GOOGLE_4=test value 4 \
+        #     -e GOOGLE_5 \
+
         key_json_str = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
         print(f"key_json_str: {key_json_str}")
+        print(f"key_json_str: {os.getenv('GOOGLE_1')}")
+        print(f"key_json_str: {os.getenv('GOOGLE_2')}")
+        print(f"key_json_str: {os.getenv('GOOGLE_3')}")
+        print(f"key_json_str: {os.getenv('GOOGLE_4')}")
+        print(f"key_json_str: {os.getenv('GOOGLE_5')}")
 
         # Convert the JSON string to a dictionary
         key_json = json.loads(key_json_str)
