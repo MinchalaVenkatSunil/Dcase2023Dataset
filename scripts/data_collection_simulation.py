@@ -19,10 +19,16 @@ def download_file(
     ):
     """Downloads a file from Google Cloud Storage."""
     try:
-        json_key_path = "/app/mldocker-key-gcp.json"
+        # json_key_path = "/app/mldocker-key-gcp.json"
         # json_key_path = "C:/Users/harit/Documents/Visual Studio 2022/MLDockerTest/ML_DCASE2023Task2DataSet/mldocker-key-gcp.json"
         
-        storage_client = storage.Client.from_service_account_json(json_key_path)
+        # Load the Google Cloud service account key from the secret
+        key_json_str = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+
+        # Convert the JSON string to a dictionary
+        key_json = json.loads(key_json_str)
+
+        storage_client = storage.Client.from_service_account_json(key_json)
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(source_blob_name)
         blob.download_to_filename(destination_file_name)
@@ -34,9 +40,16 @@ def download_file(
 def list_files(bucket_name, prefix):
     """Lists all files in a GCS bucket with the given prefix."""
     try:
-        json_key_path = "/app/mldocker-key-gcp.json"
+        # json_key_path = "/app/mldocker-key-gcp.json"
         # json_key_path = "C:/Users/harit/Documents/Visual Studio 2022/MLDockerTest/ML_DCASE2023Task2DataSet/mldocker-key-gcp.json"
-        storage_client = storage.Client.from_service_account_json(json_key_path)
+
+        # Load the Google Cloud service account key from the secret
+        key_json_str = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+
+        # Convert the JSON string to a dictionary
+        key_json = json.loads(key_json_str)
+
+        storage_client = storage.Client.from_service_account_json(key_json)
         blobs = storage_client.list_blobs(bucket_name, prefix=prefix)
         file_names = [blob.name for blob in blobs]
         logging.info(f"Listed files in {prefix}: {file_names}")

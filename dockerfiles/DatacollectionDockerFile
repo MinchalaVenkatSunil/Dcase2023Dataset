@@ -7,11 +7,14 @@ WORKDIR /app
 # Creating a volume named "mydata"
 VOLUME /app/result
 
+# Set the environment variable with the contents of the secret
+ENV GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS
+
 # Copy the necessary files
 COPY scripts/ /app/scripts/
 COPY dockerfiles/ /app/dockerfiles/
 COPY requirements.txt .
-COPY mldocker-key-gcp.json .
+# COPY mldocker-key-gcp.json .
 
 # Install dependencies
 RUN pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt
