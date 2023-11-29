@@ -110,7 +110,7 @@ jobs:
           VERSION_TAG="$VERSION-$BUILD_NUMBER"
   
           docker run -v ml-data-collection-data:/app/result \
-            -e GOOGLE_APPLICATION_CREDENTIALS_USERNAME \
+            -e GOOGLE_APPLICATION_CREDENTIALS \
             ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION_TAG} || true
           
   data_transfer:
@@ -139,5 +139,5 @@ jobs:
           VERSION_TAG="$VERSION-$BUILD_NUMBER"
 
           docker run -v ml-data-collection-data:/app/result \
-            -e GOOGLE_APPLICATION_CREDENTIALS_USERNAME \
+            -e GOOGLE_APPLICATION_CREDENTIALS \
             ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service:${VERSION_TAG} || true
