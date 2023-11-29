@@ -9,6 +9,7 @@ VOLUME /app/result
 
 # Set the environment variable with the contents of the secret
 ENV GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS
+RUN echo "GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
 
 # Echo statement for setting the working directory
 RUN echo "Setting the working directory to /app"
