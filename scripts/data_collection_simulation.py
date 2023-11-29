@@ -19,14 +19,23 @@ def download_file(
     ):
     """Downloads a file from Google Cloud Storage."""
     try:
-        json_key_path = "/app/mldocker-key-gcp.json"
+        # json_key_path = "/app/mldocker-key-gcp.json"
         # json_key_path = "C:/Users/harit/Documents/Visual Studio 2022/MLDockerTest/ML_DCASE2023Task2DataSet/mldocker-key-gcp.json"
         
-        storage_client = storage.Client.from_service_account_json(json_key_path)
+        key_json_str = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+        print(f"key_json_str: {key_json_str}")
+
+        # Convert the JSON string to a dictionary
+        key_json = json.loads(key_json_str)
+        print(f"key_json: {key_json}")
+
+
+        storage_client = storage.Client.from_service_account_json(key_json)
+        print(f"storage client: {storage_client}")
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(source_blob_name)
         blob.download_to_filename(destination_file_name)
-        os.system("chmod +r /app/result/file_name")
+        os.system(f"chmod +r /app/result/{destination_file_name}")
         logging.info(f"Downloaded file: {source_blob_name} to {destination_file_name}")
     except Exception as e:
         logging.error(f"Error downloading file {source_blob_name}: {str(e)}")
@@ -34,9 +43,19 @@ def download_file(
 def list_files(bucket_name, prefix):
     """Lists all files in a GCS bucket with the given prefix."""
     try:
-        json_key_path = "/app/mldocker-key-gcp.json"
+        # json_key_path = "/app/mldocker-key-gcp.json"
         # json_key_path = "C:/Users/harit/Documents/Visual Studio 2022/MLDockerTest/ML_DCASE2023Task2DataSet/mldocker-key-gcp.json"
-        storage_client = storage.Client.from_service_account_json(json_key_path)
+
+        key_json_str = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+        print(f"key_json_str: {key_json_str}")
+
+        # Convert the JSON string to a dictionary
+        key_json = json.loads(key_json_str)
+        print(f"key_json: {key_json}")
+
+
+        storage_client = storage.Client.from_service_account_json(key_json)
+        print(f"storage client: {storage_client}")
         blobs = storage_client.list_blobs(bucket_name, prefix=prefix)
         file_names = [blob.name for blob in blobs]
         logging.info(f"Listed files in {prefix}: {file_names}")
@@ -121,7 +140,7 @@ if __name__ == "__main__":
     # TODO: Create environment or config for these data
     gcs_bucket_name = "dcase2023bucketdataset"
     gcs_dataset_folder = "DcaseDevDataSet"
-    output_path = "/app/result/weekly/data_collection"
+    output_path = "/app/result"
     # output_path = "C:/Users/harit/Documents/Visual Studio 2022/MLDockerTest/ML_DCASE2023Task2DataSet/result/weekly/data_collection"
 
     simulate_weekly_data_collection(gcs_bucket_name, gcs_dataset_folder, output_path)

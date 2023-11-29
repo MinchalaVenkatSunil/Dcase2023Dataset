@@ -25,6 +25,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -98,7 +101,9 @@ jobs:
           BUILD_NUMBER=$GITHUB_RUN_NUMBER
           VERSION_TAG="$VERSION-$BUILD_NUMBER"
   
-          docker run -v ml-data-collection-data:/app/result ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION_TAG} || true
+          docker run -v ml-data-collection-data:/app/result \
+            -e GOOGLE_APPLICATION_CREDENTIALS="${GOOGLE_APPLICATION_CREDENTIALS}" \
+            ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION_TAG} || true
           
   data_transfer:
     runs-on: ubuntu-latest
@@ -125,4 +130,6 @@ jobs:
           BUILD_NUMBER=$GITHUB_RUN_NUMBER
           VERSION_TAG="$VERSION-$BUILD_NUMBER"
 
-          docker run -v ml-data-collection-data:/app/result ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service:${VERSION_TAG} || true
+          docker run -v ml-data-collection-data:/app/result \
+            -e GOOGLE_APPLICATION_CREDENTIALS="${GOOGLE_APPLICATION_CREDENTIALS}" \
+            ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service:${VERSION_TAG} || true
