@@ -10,6 +10,8 @@ VOLUME /app/result
 # Set the environment variable with the contents of the secret
 ENV GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS
 
+RUN echo "GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
+
 # Copy the necessary files
 COPY scripts/ /app/scripts/
 COPY dockerfiles/ /app/dockerfiles/
