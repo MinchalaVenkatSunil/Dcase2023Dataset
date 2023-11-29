@@ -111,7 +111,7 @@ jobs:
           VERSION_TAG="$VERSION-$BUILD_NUMBER"
   
           docker run -v ml-data-collection-data:/app/result \
-            -e GOOGLE_APPLICATION_CREDENTIALS \
+          -env GOOGLE_APPLICATION_CREDENTIALS="${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}"
             ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION_TAG} || true
           
   data_transfer:
