@@ -28,9 +28,6 @@ jobs:
     env:
       # GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
       GOOGLE_APPLICATION_CREDENTIALS: test value
-      TEST_VALUE: test value
-      # GOOGLE_APPLICATION_CREDENTIALS_USERNAME: ${{ secrets.DOCKER_USERNAME  }}
-
 
     steps:
       - name: Print Environment Variables
@@ -112,8 +109,16 @@ jobs:
 
           - run: |
               docker run -d --name ml-data-collection \
+                -v ml-data-collection-data:/app/result \
                 ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION_TAG} || true
-      
+
+        # docker run --env GOOGLE_1=test value 1 -v ml-data-collection-data:/app/result \
+        #     --env GOOGLE_APPLICATION_CREDENTIALS=$TEST_VALUE \
+        #     --env GOOGLE_2=$TEST_VALUE \
+        #     --env GOOGLE_3=test value 3 \
+        #     -e GOOGLE_4=test value 4 \
+        #     -e GOOGLE_5 \
+                
   data_transfer:
     runs-on: ubuntu-latest
 
@@ -141,5 +146,6 @@ jobs:
 
           - run: |
               docker run -d --name ml-data-transfer \
+                -v ml-data-collection-data:/app/result \
                 ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service:${VERSION_TAG} || true
       
