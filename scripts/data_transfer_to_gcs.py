@@ -1,7 +1,6 @@
 import logging
 from google.cloud import storage
 import os
-import json
 
 # Set up logging configuration
 logging.basicConfig(
@@ -14,19 +13,7 @@ def upload_to_gcs(bucket_name, local_path, destination_blob_name):
     """Uploads a file to Google Cloud Storage."""
     try:
         json_key_path = "/app/mldocker-key-gcp.json"
-
-        # Load the Google Cloud service account key from the secret
-        key_json_str = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-        print(f"key_json_str: {key_json_str}")
-
-        # Convert the JSON string to a dictionary
-        key_json = json.loads(key_json_str)
-        print(f"key_json: {key_json}")
-
-
         storage_client = storage.Client.from_service_account_json(json_key_path)
-        print(f"storage client: {storage_client}")
-
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(destination_blob_name)
         blob.upload_from_filename(local_path)

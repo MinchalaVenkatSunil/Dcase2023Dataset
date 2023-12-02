@@ -21,29 +21,8 @@ def download_file(
     try:
         json_key_path = "/app/mldocker-key-gcp.json"
         # json_key_path = "C:/Users/harit/Documents/Visual Studio 2022/MLDockerTest/ML_DCASE2023Task2DataSet/mldocker-key-gcp.json"
-        # docker run --env GOOGLE_1=test value 1 -v ml-data-collection-data:/app/result \
-        #     --env GOOGLE_APPLICATION_CREDENTIALS=$TEST_VALUE \
-        #     --env GOOGLE_2=$TEST_VALUE \
-        #     --env GOOGLE_3=test value 3 \
-        #     -e GOOGLE_4=test value 4 \
-        #     -e GOOGLE_5 \
-
-        print("Trying to get key........")
-        key_json_str = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-        print(f"key_json_str 0000000000: {key_json_str}")
-        print(f"key_json_str1: {os.getenv('GOOGLE_1')}")
-        print(f"key_json_str2: {os.getenv('GOOGLE_2')}")
-        print(f"key_json_str3: {os.getenv('GOOGLE_3')}")
-        print(f"key_json_str4: {os.getenv('GOOGLE_4')}")
-        print(f"key_json_str5: {os.getenv('GOOGLE_5')}")
-
-        # Convert the JSON string to a dictionary
-        key_json = json.loads(key_json_str)
-        print(f"key_json: {key_json}")
-
-
+        
         storage_client = storage.Client.from_service_account_json(json_key_path)
-        print(f"storage client: {storage_client}")
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(source_blob_name)
         blob.download_to_filename(destination_file_name)
@@ -57,23 +36,7 @@ def list_files(bucket_name, prefix):
     try:
         json_key_path = "/app/mldocker-key-gcp.json"
         # json_key_path = "C:/Users/harit/Documents/Visual Studio 2022/MLDockerTest/ML_DCASE2023Task2DataSet/mldocker-key-gcp.json"
-
-        print("Trying to get key........")
-        key_json_str = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-        print(f"key_json_str 1111: {key_json_str}")
-        print(f"key_json_str1: {os.getenv('GOOGLE_1')}")
-        print(f"key_json_str2: {os.getenv('GOOGLE_2')}")
-        print(f"key_json_str3: {os.getenv('GOOGLE_3')}")
-        print(f"key_json_str4: {os.getenv('GOOGLE_4')}")
-        print(f"key_json_str5: {os.getenv('GOOGLE_5')}")
-
-        # Convert the JSON string to a dictionary
-        key_json = json.loads(key_json_str)
-        print(f"key_json: {key_json}")
-
-
         storage_client = storage.Client.from_service_account_json(json_key_path)
-        print(f"storage client: {storage_client}")
         blobs = storage_client.list_blobs(bucket_name, prefix=prefix)
         file_names = [blob.name for blob in blobs]
         logging.info(f"Listed files in {prefix}: {file_names}")
