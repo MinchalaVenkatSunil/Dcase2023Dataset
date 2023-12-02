@@ -19,7 +19,7 @@ def download_file(
     ):
     """Downloads a file from Google Cloud Storage."""
     try:
-        # json_key_path = "/app/mldocker-key-gcp.json"
+        json_key_path = "/app/mldocker-key-gcp.json"
         # json_key_path = "C:/Users/harit/Documents/Visual Studio 2022/MLDockerTest/ML_DCASE2023Task2DataSet/mldocker-key-gcp.json"
         # docker run --env GOOGLE_1=test value 1 -v ml-data-collection-data:/app/result \
         #     --env GOOGLE_APPLICATION_CREDENTIALS=$TEST_VALUE \
@@ -42,7 +42,7 @@ def download_file(
         print(f"key_json: {key_json}")
 
 
-        storage_client = storage.Client.from_service_account_json(key_json)
+        storage_client = storage.Client.from_service_account_json(json_key_path)
         print(f"storage client: {storage_client}")
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(source_blob_name)
@@ -55,7 +55,7 @@ def download_file(
 def list_files(bucket_name, prefix):
     """Lists all files in a GCS bucket with the given prefix."""
     try:
-        # json_key_path = "/app/mldocker-key-gcp.json"
+        json_key_path = "/app/mldocker-key-gcp.json"
         # json_key_path = "C:/Users/harit/Documents/Visual Studio 2022/MLDockerTest/ML_DCASE2023Task2DataSet/mldocker-key-gcp.json"
 
         print("Trying to get key........")
@@ -72,7 +72,7 @@ def list_files(bucket_name, prefix):
         print(f"key_json: {key_json}")
 
 
-        storage_client = storage.Client.from_service_account_json(key_json)
+        storage_client = storage.Client.from_service_account_json(json_key_path)
         print(f"storage client: {storage_client}")
         blobs = storage_client.list_blobs(bucket_name, prefix=prefix)
         file_names = [blob.name for blob in blobs]
