@@ -26,7 +26,7 @@ def download_file(
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(source_blob_name)
         blob.download_to_filename(destination_file_name)
-        os.system(f"chmod +r /app/result/{destination_file_name}")
+        # os.system(f"chmod +r /app/result/{destination_file_name}")
         logging.info(f"Downloaded file: {source_blob_name} to {destination_file_name}")
     except Exception as e:
         logging.error(f"Error downloading file {source_blob_name}: {str(e)}")
