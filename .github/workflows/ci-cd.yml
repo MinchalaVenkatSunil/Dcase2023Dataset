@@ -18,14 +18,27 @@ on:
     branches:
       - main
       - master
-      - overall_requirement_basecode
+      - auth_changes
       - data_collection_transfer
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      PROJECT_ID: mldocker
+      WORKLOAD_IDENTITY_POOL_NAME: mldocker pool
+      WORKLOAD_IDENTITY_POOL_ID: mldocker-pool
+      WORKLOAD_IDENTITY_PROVIDER_ID: mldocker-provider
+      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}"
+
     steps:
+
+      - name: Print Environment Variables
+        run: |
+          echo "GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS"
+          echo "GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}"
+  
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -37,15 +50,19 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - id: auth
-        name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v0.4.0
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1.0.0'
         with:
-          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+          # "https://iam.googleapis.com/projects/763509664602/locations/global/workloadIdentityPools/mldocker-pool/providers/mldocker-provider"
+          workload_identity_provider: 'projects/763509664602/locations/global/workloadIdentityPools/mldocker-pool/providers/mldocker-provider'
+          service_account: 'cloud-run-function-service@mldocker.iam.gserviceaccount.com'
 
-      - name: Print Environment Variables
-        run: |
-          echo "SECRET GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}"
+      # - id: auth
+      #   name: Authenticate to Google Cloud
+      #   uses: google-github-actions/auth@v0.4.0
+      #   with:
+      #     credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -56,6 +73,23 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKENS }}
 
+      # - name: workload identity pool
+      #   run: |
+          # echo "WORKLOAD_IDENTITY_POOL_NAME: $WORKLOAD_IDENTITY_POOL_NAME"
+          # echo "WORKLOAD_IDENTITY_POOL_NAME: ${WORKLOAD_IDENTITY_POOL_NAME}"
+          # gcloud iam workload-identity-pools create ${WORKLOAD_IDENTITY_POOL_ID} \
+          # --project=${PROJECT_ID} \
+          # --location="global" \
+          # --display-name=${WORKLOAD_IDENTITY_POOL_NAME}
+
+          # gcloud iam workload-identity-pools providers create-oidc "my-provider" \
+          # --project="${PROJECT_ID}" \
+          # --location="global" \
+          # --workload-identity-pool="my-pool" \
+          # --display-name="Demo provider" \
+          # --attribute-mapping="google.subject=assertion.sub,attribute.actor=assertion.actor,attribute.aud=assertion.aud" \
+          # --issuer-uri="https://token.actions.githubusercontent.com"
+          
       - name: Build and push Docker images
         run: |
           # TODO: Move to env variables
@@ -101,12 +135,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKENS }}
   
-      - name: Print credentials_json
-        run: |
-          echo "Credentials JSON: ${{ secrets.GOOGLE_CREDENTIALS }}"
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-
       - name: Run Docker container for data collection
         # if: github.event.schedule == '30 5 * * 1'
         run: |
@@ -116,7 +144,7 @@ jobs:
 
           docker run -d --name ml-data-collection \
             -v ml-data-collection-data:/app/result \
-            -e GOOGLE_APPLICATION_CREDENTIALS="$GOOGLE_APPLICATION_CREDENTIALS" \
+            -e GOOGLE_APPLICATION_CREDENTIALS="${GOOGLE_APPLICATION_CREDENTIALS}" \
             ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION_TAG} || true
 
   data_transfer:
