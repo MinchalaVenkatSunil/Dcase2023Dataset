@@ -15,28 +15,26 @@ logging.basicConfig(
 def download_file(
         bucket_name, 
         source_blob_name, 
-        destination_file_name
+        destination_file_name,
+        storage_client
     ):
     """Downloads a file from Google Cloud Storage."""
     try:
-        json_key_path = "/app/mldocker-key-gcp.json"
-        # json_key_path = "C:/Users/harit/Documents/Visual Studio 2022/MLDockerTest/ML_DCASE2023Task2DataSet/mldocker-key-gcp.json"
-        
-        storage_client = storage.Client.from_service_account_json(json_key_path)
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(source_blob_name)
         blob.download_to_filename(destination_file_name)
-        # os.system(f"chmod +r /app/result/{destination_file_name}")
         logging.info(f"Downloaded file: {source_blob_name} to {destination_file_name}")
     except Exception as e:
         logging.error(f"Error downloading file {source_blob_name}: {str(e)}")
 
-def list_files(bucket_name, prefix):
+def list_files(
+        bucket_name, 
+        prefix,
+        storage_client
+        ):
     """Lists all files in a GCS bucket with the given prefix."""
+
     try:
-        json_key_path = "/app/mldocker-key-gcp.json"
-        # json_key_path = "C:/Users/harit/Documents/Visual Studio 2022/MLDockerTest/ML_DCASE2023Task2DataSet/mldocker-key-gcp.json"
-        storage_client = storage.Client.from_service_account_json(json_key_path)
         blobs = storage_client.list_blobs(bucket_name, prefix=prefix)
         file_names = [blob.name for blob in blobs]
         logging.info(f"Listed files in {prefix}: {file_names}")
@@ -48,15 +46,15 @@ def list_files(bucket_name, prefix):
 def simulate_weekly_data_collection(
         bucket_name, 
         dataset_folder, 
-        output_path
+        output_path,
+        storage_client
     ):
     logging.info("Starting weekly data collection simulation...")
 
     os.makedirs(output_path, exist_ok=True)
-    os.chmod(output_path, 0o777)
     
     # List all machine types in the dataset
-    machine_types = list_files(bucket_name, f"{dataset_folder}/")
+    machine_types = list_files(bucket_name, f"{dataset_folder}/", storage_client)
     machine_types = list(set(machine_types))
 
     logging.info(f"Machine types: {machine_types}")
@@ -65,13 +63,14 @@ def simulate_weekly_data_collection(
 
     logging.info(f"Machine types with split: {machine_types}")
 
+    # TODO: optimize this code, consider Thread pool executor, async as necessary
     # Simulate weekly data collection for each machine type
     for machine_type in machine_types:
         machine_type_prefix = f"{dataset_folder}/{machine_type}"
 
         logging.info(f"Machine type prefix: {machine_type_prefix}")
 
-        sections = list_files(bucket_name, f"{machine_type_prefix}/")
+        sections = list_files(bucket_name, f"{machine_type_prefix}/", storage_client)
         sections = list(set(sections))
         sections = [section.split('/')[2] for section in sections if '/' in section]
         sections = list(set(sections))
@@ -79,7 +78,7 @@ def simulate_weekly_data_collection(
         for section in sections:
             section_prefix = f"{machine_type_prefix}/{section}"
 
-            files = list_files(bucket_name, f"{section_prefix}/")
+            files = list_files(bucket_name, f"{section_prefix}/", storage_client)
             files = list(set(files))
             files = [file.split('/')[-1] for file in files if '/' in file and file.endswith('.wav')]
             files = list(set(files))
@@ -93,7 +92,7 @@ def simulate_weekly_data_collection(
                 destination_path = os.path.join(output_path, f'{machine_type}_{section}_{file_name}')
 
                 # Download the file
-                download_file(bucket_name, source_blob_name, destination_path)
+                download_file(bucket_name, source_blob_name, destination_path, storage_client)
 
                 # Create and save metadata in JSON format
                 metadata = {
@@ -121,7 +120,26 @@ if __name__ == "__main__":
     # TODO: Create environment or config for these data
     gcs_bucket_name = "dcase2023bucketdataset"
     gcs_dataset_folder = "DcaseDevDataSet"
-    output_path = "/app/result"
-    # output_path = "C:/Users/harit/Documents/Visual Studio 2022/MLDockerTest/ML_DCASE2023Task2DataSet/result/weekly/data_collection"
 
-    simulate_weekly_data_collection(gcs_bucket_name, gcs_dataset_folder, output_path)
+    json_key_path = "/app/mldocker-key-gcp.json"
+    # json_key_path = "./mldocker-key-gcp.json"
+
+    output_path = "/app/result"
+    # output_path = "./result/weekly/data_collection"
+
+    credentials_json = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+    # print(f"Temporarily to check print credentials_json: {credentials_json}")
+
+    # # Create a temporary JSON key file
+    # temp_key_path = '/tmp/temp_key.json'
+    # with open(temp_key_path, 'w') as temp_key_file:
+    #     temp_key_file.write(credentials_json)
+
+    
+    storage_client = storage.Client.from_service_account_json(json_key_path)
+
+    simulate_weekly_data_collection(
+        gcs_bucket_name, 
+        gcs_dataset_folder, 
+        output_path,
+        storage_client)
