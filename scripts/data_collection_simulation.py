@@ -4,6 +4,7 @@ import os
 import random
 from datetime import datetime, timedelta
 import json
+import base64
 
 # TODO: Move the logging config from here
 logging.basicConfig(
@@ -23,20 +24,33 @@ def download_file(
         # json_key_path = "C:/Users/harit/Documents/Visual Studio 2022/MLDockerTest/ML_DCASE2023Task2DataSet/mldocker-key-gcp.json"
         
         storage_client = storage.Client.from_service_account_json(json_key_path)
+        # storage_client = storage.Client()
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(source_blob_name)
         blob.download_to_filename(destination_file_name)
-        # os.system(f"chmod +r /app/result/{destination_file_name}")
         logging.info(f"Downloaded file: {source_blob_name} to {destination_file_name}")
     except Exception as e:
         logging.error(f"Error downloading file {source_blob_name}: {str(e)}")
 
 def list_files(bucket_name, prefix):
     """Lists all files in a GCS bucket with the given prefix."""
+
+    print("Trying to get key........")
+    credentials_json = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+    print(f"credentials_json: {credentials_json}")
+
+    # # Create a temporary JSON key file
+    # temp_key_path = '/tmp/temp_key.json'
+    # with open(temp_key_path, 'w') as temp_key_file:
+    #     temp_key_file.write(credentials_json)
+
     try:
         json_key_path = "/app/mldocker-key-gcp.json"
         # json_key_path = "C:/Users/harit/Documents/Visual Studio 2022/MLDockerTest/ML_DCASE2023Task2DataSet/mldocker-key-gcp.json"
-        storage_client = storage.Client.from_service_account_json(json_key_path)
+        storage_client = storage.Client()
+        print(f"storage_client: {storage_client}")
+
+        storage_client = storage.Client.from_service_account_json(credentials_json)
         blobs = storage_client.list_blobs(bucket_name, prefix=prefix)
         file_names = [blob.name for blob in blobs]
         logging.info(f"Listed files in {prefix}: {file_names}")
@@ -53,7 +67,6 @@ def simulate_weekly_data_collection(
     logging.info("Starting weekly data collection simulation...")
 
     os.makedirs(output_path, exist_ok=True)
-    os.chmod(output_path, 0o777)
     
     # List all machine types in the dataset
     machine_types = list_files(bucket_name, f"{dataset_folder}/")

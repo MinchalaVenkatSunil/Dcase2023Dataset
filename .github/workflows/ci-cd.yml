@@ -9,7 +9,7 @@ name: CI/CD Pipeline
 on:
   schedule:
     - cron: '30 5 * * 1' # Monday
-    - cron: '30 5 * * 3' # Wednesday
+    - cron: '30 6 * * 1' # Monday after 1
     # The below are for testing
     # - cron: '50 11 * * *'
     # - cron: '55 11 * * *'
@@ -36,6 +36,16 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      - id: auth
+        name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v0.4.0
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
+      - name: Print Environment Variables
+        run: |
+          echo "SECRET GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -91,23 +101,28 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKENS }}
   
+      - name: Print credentials_json
+        run: |
+          echo "Credentials JSON: ${{ secrets.GOOGLE_CREDENTIALS }}"
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+
       - name: Run Docker container for data collection
-        # if: github.event.schedule == '50 11 * * *'
+        # if: github.event.schedule == '30 5 * * 1'
         run: |
           VERSION=1.0.1
           BUILD_NUMBER=$GITHUB_RUN_NUMBER
           VERSION_TAG="$VERSION-$BUILD_NUMBER"
-            docker run -d --name ml-data-collection \
-              -v ml-data-collection-data:/app/result \
-              --env GOOGLE_APPLICATION_CREDENTIALS="$TEST_VALUE" \
-              --env GOOGLE_2="$TEST_VALUE" \
-              -e GOOGLE_4="test value 4" \
-              ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION_TAG} || true
+
+          docker run -d --name ml-data-collection \
+            -v ml-data-collection-data:/app/result \
+            -e GOOGLE_APPLICATION_CREDENTIALS="$GOOGLE_APPLICATION_CREDENTIALS" \
+            ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION_TAG} || true
 
   data_transfer:
     runs-on: ubuntu-latest
 
-    needs: data_collection  # Ensure the data collection job has completed
+    needs: data_collection
 
     steps:
       - name: Checkout repository
@@ -123,7 +138,7 @@ jobs:
           password: ${{ secrets.DOCKER_TOKENS }}
 
       - name: Run Docker container for data transfer
-        # if: github.event.schedule == '50 11 * * *'
+        # if: github.event.schedule == '30 6 * * 1'
         run: |
           VERSION=1.0.1
           BUILD_NUMBER=$GITHUB_RUN_NUMBER
@@ -131,6 +146,5 @@ jobs:
 
           docker run -d --name ml-data-transfer \
             -v ml-data-collection-data:/app/result \
-            --env GOOGLE_1="test value 1" \
             ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service:${VERSION_TAG} || true
       
