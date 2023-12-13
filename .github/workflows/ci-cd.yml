@@ -19,7 +19,7 @@ on:
       - main
       - master
       - overall_requirement_basecode
-      - data_collection_transfer
+      - data_collection_transfer_v2
 
 jobs:
   build:
@@ -112,12 +112,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKENS }}
   
-      # - name: Print credentials_json
-      #   run: |
-      #     echo "Credentials JSON: ${{ secrets.GOOGLE_CREDENTIALS }}"
-      #   env:
-      #     GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-
       - name: Run Docker container for data collection
         # if: github.event.schedule == '30 5 * * 1'
         run: |
@@ -125,9 +119,9 @@ jobs:
           BUILD_NUMBER=$GITHUB_RUN_NUMBER
           VERSION_TAG="$VERSION-$BUILD_NUMBER"
 
+          docker pull ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service:${VERSION_TAG}
+          
           docker run -d --name ml-data-collection \
-            -v ml-data-collection-data:/app/result \
-            -e GOOGLE_APPLICATION_CREDENTIALS="$GOOGLE_APPLICATION_CREDENTIALS" \
             ${{ secrets.DOCKER_USERNAME }}/ml-data-collection-service:${VERSION_TAG}
 
   data_transfer:
@@ -155,7 +149,8 @@ jobs:
           BUILD_NUMBER=$GITHUB_RUN_NUMBER
           VERSION_TAG="$VERSION-$BUILD_NUMBER"
 
+          docker pull ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service:${VERSION_TAG}
+
           docker run -d --name ml-data-transfer \
-            -v ml-data-collection-data:/app/result \
             ${{ secrets.DOCKER_USERNAME }}/ml-data-transfer-service:${VERSION_TAG}
       
